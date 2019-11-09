@@ -9,8 +9,8 @@ import tensorflow as tf
 from scipy.special import expit
 
 import os
-if not os.path.exists('weights/'):
-    os.makedirs('weights/')
+if not os.path.exists('weights_multiarmed/'):
+    os.makedirs('weights_multiarmed/')
 
 
 class StateSpace:
@@ -301,8 +301,8 @@ class Controller:
         with self.policy_session.as_default():
             K.set_session(self.policy_session)
 
-            with tf.name_scope('controller'):
-                with tf.variable_scope('policy_network'):
+            with tf.name_scope('controller_multiarmed'):
+                with tf.variable_scope('policy_network_multiarmed'):
 
                     # state input is the first input fed into the controller RNN.
                     # the rest of the inputs are fed to the RNN internally
@@ -371,7 +371,7 @@ class Controller:
                         self.policy_classifiers.append(classifier)
                         self.policy_actions.append(preds)
 
-            policy_net_variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='policy_network')
+            policy_net_variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='policy_network_multiarmed')
 
             with tf.name_scope('optimizer'):
                 self.global_step = tf.Variable(0, trainable=False)
@@ -426,7 +426,7 @@ class Controller:
                             self.gradients[i] = (grad * self.discounted_rewards, var)
 
                 # training update
-                with tf.name_scope("train_policy_network"):
+                with tf.name_scope("train_policy_network_multiarmed"):
                     # apply gradients to update policy network
                     self.train_op = self.optimizer.apply_gradients(self.gradients, global_step=self.global_step)
 
@@ -441,7 +441,7 @@ class Controller:
             self.saver = tf.train.Saver(max_to_keep=1)
 
             if self.restore_controller:
-                path = tf.train.latest_checkpoint('weights/')
+                path = tf.train.latest_checkpoint('weights_multiarmed/')
 
                 if path is not None and tf.train.checkpoint_exists(path):
                     print("Loading Controller Checkpoint !")
@@ -453,7 +453,7 @@ class Controller:
 
         # dump buffers to file if it grows larger than 50 items
         if len(self.reward_buffer) > 20:
-            with open('buffers.txt', mode='a+') as f:
+            with open('buffers_multiarmed.txt', mode='a+') as f:
                 for i in range(20):
                     state_ = self.state_buffer[i]
                     state_list = self.state_space.parse_state_space_list(state_)
@@ -461,7 +461,7 @@ class Controller:
 
                     f.write("%0.4f,%s\n" % (self.reward_buffer[i], state_list))
 
-                print("Saved buffers to file `buffers.txt` !")
+                print("Saved buffers to file `buffers_multiarmed.txt` !")
 
             self.reward_buffer = [self.reward_buffer[-1]]
             self.state_buffer = [self.state_buffer[-1]]
@@ -536,16 +536,16 @@ class Controller:
                                                                      feed_dict=feed_dict)
 
             self.summary_writer.add_summary(summary, global_step)
-            self.saver.save(self.policy_session, save_path='weights/controller.ckpt', global_step=self.global_step)
+            self.saver.save(self.policy_session, save_path='weights_multiarmed/controller.ckpt', global_step=self.global_step)
 
             # reduce exploration after many train steps
-            if global_step != 0 and global_step % 20 == 0 and self.exploration > 0.5:
-                self.exploration *= 0.99
+            if global_step != 0 and global_step % 10 == 0 and self.exploration > 0.3:
+                self.exploration -= 0.1
 
         return loss
 
     def remove_files(self):
-        files = ['train_history.csv', 'buffers.txt']
+        files = ['train_multiarmed_history.csv', 'buffers_multiarmed.txt']
 
         for file in files:
             if os.path.exists(file):

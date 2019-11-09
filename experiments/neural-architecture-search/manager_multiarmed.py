@@ -70,13 +70,13 @@ class NetworkManager:
             # train the model using Keras methods
             model.fit(X_train, y_train, batch_size=self.batchsize, epochs=self.epochs,
                       verbose=0, validation_data=(X_val, y_val),
-                      callbacks=[ModelCheckpoint('weights/temp_network.h5',
+                      callbacks=[ModelCheckpoint('weights_multiarmed/temp_network.h5',
                                                  monitor='val_acc', verbose=0,
                                                  save_best_only=True,
                                                  save_weights_only=True)])
 
             # load best performance epoch in this training session
-            model.load_weights('weights/temp_network.h5')
+            model.load_weights('weights_multiarmed/temp_network.h5')
 
             # evaluate the model
             loss, acc = model.evaluate(X_val, y_val, batch_size=self.batchsize)

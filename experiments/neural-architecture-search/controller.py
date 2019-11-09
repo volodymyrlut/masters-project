@@ -495,8 +495,8 @@ class Controller:
             self.saver.save(self.policy_session, save_path='weights/controller.ckpt', global_step=self.global_step)
 
             # reduce exploration after many train steps
-            if global_step != 0 and global_step % 20 == 0 and self.exploration > 0.5:
-                self.exploration *= 0.99
+            if global_step != 0 and global_step % 10 == 0 and self.exploration > 0.3:
+                self.exploration -= 0.1
 
         return loss
 

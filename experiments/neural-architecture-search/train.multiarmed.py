@@ -7,7 +7,7 @@ from keras.datasets import cifar10
 from keras.utils import to_categorical
 
 from controller_multiarmed import Controller, StateSpace
-from manager import NetworkManager
+from manager_multiarmed import NetworkManager
 from model import model_fn
 
 # create a shared session between Keras and Tensorflow
@@ -15,9 +15,9 @@ policy_sess = tf.Session()
 K.set_session(policy_sess)
 
 NUM_LAYERS = 4  # number of layers of the state space
-MAX_TRIALS = 250  # maximum number of models generated
+MAX_TRIALS = 100  # maximum number of models generated
 
-MAX_EPOCHS = 10  # maximum number of epochs to train
+MAX_EPOCHS = 20  # maximum number of epochs to train
 CHILD_BATCHSIZE = 128  # batchsize of the child models
 EXPLORATION = 0.8  # high exploration for the first 1000 steps
 REGULARIZATION = 1e-3  # regularization strength
@@ -100,7 +100,7 @@ for trial in range(MAX_TRIALS):
         print("Trial %d: Controller loss : %0.6f" % (trial + 1, loss))
 
         # write the results of this trial into a file
-        with open('train_history.csv', mode='a+') as f:
+        with open('train_multiarmed_history.csv', mode='a+') as f:
             data = [previous_acc, reward]
             data.extend(state_space.parse_state_space_list(state))
             writer = csv.writer(f)

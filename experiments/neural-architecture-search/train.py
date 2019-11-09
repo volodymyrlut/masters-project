@@ -16,9 +16,9 @@ policy_sess = tf.Session()
 K.set_session(policy_sess)
 
 NUM_LAYERS = 4  # number of layers of the state space
-MAX_TRIALS = 250  # maximum number of models generated
+MAX_TRIALS = 100  # maximum number of models generated
 
-MAX_EPOCHS = 10  # maximum number of epochs to train
+MAX_EPOCHS = 20  # maximum number of epochs to train
 CHILD_BATCHSIZE = 128  # batchsize of the child models
 EXPLORATION = 0.8  # high exploration for the first 1000 steps
 REGULARIZATION = 1e-3  # regularization strength
