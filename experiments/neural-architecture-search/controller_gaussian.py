@@ -5,13 +5,15 @@ from collections import OrderedDict
 
 from keras import backend as K
 import tensorflow as tf
+from GaussianLayer import GaussianLayer
+from GaussianLoss import gaussian_likelihood
+import tqdm
+import os
+
 import pdb
 
-from tensorflow.python import debug as tf_debug
-
-import os
-if not os.path.exists('weights/'):
-    os.makedirs('weights/')
+if not os.path.exists('weights_gaussian/'):
+    os.makedirs('weights_gaussian/')
 
 
 class StateSpace:
@@ -214,6 +216,8 @@ class Controller:
         self.policy_actions = []
         self.policy_labels = []
 
+        self.random_classifier = tf.random_uniform(shape=(1,3))
+
         self.build_policy_network()
 
     def get_action(self, state):
@@ -258,7 +262,6 @@ class Controller:
                 K.set_session(self.policy_session)
 
                 with tf.name_scope('action_prediction'):
-                    #self.policy_session = tf_debug.TensorBoardDebugWrapperSession(self.policy_session, 'VolodymyrLutAir:6064')
                     pred_actions = self.policy_session.run(self.policy_actions, feed_dict={self.state_input: state})
 
                 return pred_actions
@@ -318,9 +321,8 @@ class Controller:
                             # add a new classifier for each layers output
                             classifier = tf.layers.dense(outputs[:, -1, :], units=size, name='classifier_%d' % (i),
                                                          reuse=False)
-
+                            loc, scale = GaussianLayer(1, name='main_output')(classifier)
                             preds = tf.nn.softmax(classifier)
-
                             # feed the previous layer (i-1 layer output) to the next layers input, along with state
                             # take the class label
                             cell_input = tf.argmax(preds, axis=-1)
@@ -336,7 +338,7 @@ class Controller:
 
                         # store the tensors for later loss computation
                         self.cell_outputs.append(cell_input)
-                        self.policy_classifiers.append(classifier)
+                        self.policy_classifiers.append([loc, scale])
                         self.policy_actions.append(preds)
 
             policy_net_variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='policy_network')
@@ -353,32 +355,20 @@ class Controller:
 
             with tf.name_scope('losses'):
                 self.discounted_rewards = tf.placeholder(tf.float32, shape=(None,), name='discounted_rewards')
-                tf.summary.histogram('discounted_reward', tf.reduce_sum(self.discounted_rewards))
-
-                # calculate sum of all the individual classifiers
-                ucb_loss_total = 0
+                tf.summary.scalar('discounted_reward', tf.reduce_sum(self.discounted_rewards))
+                gaussian_loss_total = 0
                 for i in range(self.state_size * self.num_layers):
-                    classifier = self.policy_classifiers[i]
-                    state_space = self.state_space[i]
-                    size = state_space['size']
+                  classifier = self.policy_classifiers[i]
+                  gaussian_loss_total += tf.reduce_sum(gaussian_likelihood(0.95, classifier, self.random_classifier))
+                  size = state_space['size']
+                  with tf.name_scope('state_%d' % (i + 1)):
+                    labels = tf.placeholder(dtype=tf.float32, shape=(None, size), name='cell_label_%d' % i)
+                    self.policy_labels.append(labels)
 
-                    with tf.name_scope('state_%d' % (i + 1)):
-                        labels = tf.placeholder(dtype=tf.float32, shape=(None, size), name='cell_label_%d' % i)
-                        self.policy_labels.append(labels)
-                        ce_loss = tf.nn.softmax_cross_entropy_with_logits_v2(logits=classifier, labels=labels)
-                        tf.summary.histogram('state_%d_ce_loss' % (i + 1), tf.reduce_mean(ce_loss))
-                        entries = tf.reduce_sum(tf.map_fn(lambda l: tf.reduce_all(tf.math.equal(labels, l)) if (labels.shape.as_list() == np.array(l).shape) else False, self.policy_labels))
-                        ucb_loss = tf.math.sqrt(tf.math.divide(2.0 * tf.math.log(entries), len(self.policy_labels)))
+                pdb.set_trace()
+                self.total_loss += gaussian_loss_total
 
-                        tf.summary.histogram('state_%d_ucb_loss' % (i + 1), tf.reduce_max(ucb_loss))
-                    ucb_loss_total += ucb_loss
-
-                policy_gradient_loss = tf.reduce_mean(ucb_loss_total)
-                reg_loss = tf.reduce_sum([tf.reduce_sum(tf.square(x)) for x in policy_net_variables])  # Regularization
-
-                # sum up policy gradient and regularization loss
-                self.total_loss = policy_gradient_loss + self.reg_strength * reg_loss
-                tf.summary.histogram('total_loss', self.total_loss)
+                tf.summary.scalar('total_loss', self.total_loss)
 
                 self.gradients = self.optimizer.compute_gradients(self.total_loss)
 
@@ -400,18 +390,20 @@ class Controller:
                     # apply gradients to update policy network
                     self.train_op = self.optimizer.apply_gradients(self.gradients, global_step=self.global_step)
 
+            # LOSSES END
+
             self.summaries_op = tf.summary.merge_all()
 
             timestr = time.strftime("%Y-%m-%d-%H-%M-%S")
-            filename = 'logs/%s' % timestr
+            filename = 'logs_gaussian/%s' % timestr
 
             self.summary_writer = tf.summary.FileWriter(filename, graph=self.policy_session.graph)
-            #self.policy_session = tf_debug.TensorBoardDebugWrapperSession(self.policy_session, 'VolodymyrLutAir:6064')
+
             self.policy_session.run(tf.global_variables_initializer())
             self.saver = tf.train.Saver(max_to_keep=1)
 
             if self.restore_controller:
-                path = tf.train.latest_checkpoint('weights/')
+                path = tf.train.latest_checkpoint('weights_gaussian/')
 
                 if path is not None and tf.train.checkpoint_exists(path):
                     print("Loading Controller Checkpoint !")
@@ -423,7 +415,7 @@ class Controller:
 
         # dump buffers to file if it grows larger than 50 items
         if len(self.reward_buffer) > 20:
-            with open('buffers.txt', mode='a+') as f:
+            with open('buffers_gaussian.txt', mode='a+') as f:
                 for i in range(20):
                     state_ = self.state_buffer[i]
                     state_list = self.state_space.parse_state_space_list(state_)
@@ -451,6 +443,7 @@ class Controller:
                 running_add = 0
             running_add = running_add * self.discount_factor + rewards[t]
             discounted_rewards[t] = running_add
+        pdb.set_trace()
         return discounted_rewards[-1]
 
     def train_step(self):
@@ -494,13 +487,12 @@ class Controller:
 
             print("Training RNN (States ip) : ", state_list)
             print("Training RNN (Reward ip) : ", reward.flatten())
-            #self.policy_session = tf_debug.TensorBoardDebugWrapperSession(self.policy_session, 'VolodymyrLutAir:6064')
             _, loss, summary, global_step = self.policy_session.run([self.train_op, self.total_loss, self.summaries_op,
                                                                      self.global_step],
                                                                      feed_dict=feed_dict)
 
             self.summary_writer.add_summary(summary, global_step)
-            self.saver.save(self.policy_session, save_path='weights/controller.ckpt', global_step=self.global_step)
+            self.saver.save(self.policy_session, save_path='weights_gaussian/controller.ckpt', global_step=self.global_step)
 
             # reduce exploration after many train steps
             if global_step != 0 and global_step % 10 == 0 and self.exploration > 0.3:
@@ -509,7 +501,7 @@ class Controller:
         return loss
 
     def remove_files(self):
-        files = ['train_history.csv', 'buffers.txt']
+        files = ['train_history_gaussian.csv', 'buffers_gaussian.txt']
 
         for file in files:
             if os.path.exists(file):

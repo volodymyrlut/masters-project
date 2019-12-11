@@ -6,9 +6,12 @@ from keras import backend as K
 from keras.datasets import cifar10
 from keras.utils import to_categorical
 
-from controller_multiarmed import Controller, StateSpace
-from manager_multiarmed import NetworkManager
+from controller_gaussian import Controller, StateSpace
+from manager_gaussian import NetworkManager
 from model import model_fn
+
+import pdb
+
 
 # create a shared session between Keras and Tensorflow
 policy_sess = tf.Session()
@@ -19,7 +22,7 @@ MAX_TRIALS = 100  # maximum number of models generated
 
 MAX_EPOCHS = 20  # maximum number of epochs to train
 CHILD_BATCHSIZE = 128  # batchsize of the child models
-EXPLORATION = 0.8  # high exploration for the first 1000 steps
+EXPLORATION = 0.1  # high exploration for the first 1000 steps
 REGULARIZATION = 1e-3  # regularization strength
 CONTROLLER_CELLS = 32  # number of cells in RNN controller
 EMBEDDING_DIM = 20  # dimension of the embeddings for each state
@@ -100,7 +103,7 @@ for trial in range(MAX_TRIALS):
         print("Trial %d: Controller loss : %0.6f" % (trial + 1, loss))
 
         # write the results of this trial into a file
-        with open('train_multiarmed_history.csv', mode='a+') as f:
+        with open('train_history_gaussian.csv', mode='a+') as f:
             data = [previous_acc, reward]
             data.extend(state_space.parse_state_space_list(state))
             writer = csv.writer(f)

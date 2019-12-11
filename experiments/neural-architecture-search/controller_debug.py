@@ -5,12 +5,11 @@ from collections import OrderedDict
 
 from keras import backend as K
 import tensorflow as tf
-
-from scipy.special import expit
+import pdb
 
 import os
-if not os.path.exists('weights_multiarmed/'):
-    os.makedirs('weights_multiarmed/')
+if not os.path.exists('weights/'):
+    os.makedirs('weights/')
 
 
 class StateSpace:
@@ -179,41 +178,6 @@ class StateSpace:
         return self.state_count_
 
 
-def make_bandits(params):
-    def pull(arm, size=None):
-        while True:
-            # Logit-normal distributed returns (or any distribution with finite support)
-            # expit is the inverse of logit
-            reward = expit(np.random.normal(loc=params[arm], scale=1, size=size))
-            yield reward
-
-    return pull, len(params)
-
-
-def bayesian_strategy(pull, num_bandits):
-    num_rewards = np.zeros(num_bandits)
-    num_trials = np.zeros(num_bandits)
-
-    while True:
-        # Sample from the bandits' priors, and choose largest
-        choice = np.argmax(np.random.beta(2 + num_rewards,
-                                          2 + num_trials - num_rewards))
-
-        # Sample the chosen bandit
-        reward = next(pull(choice))
-
-        # Sample a Bernoulli with probability of success = reward
-        # Remember, reward is normalized to be in [0, 1]
-        outcome = np.random.binomial(n=1, p=reward)
-
-        # Update
-        num_rewards[choice] += outcome
-        num_trials[choice] += 1
-
-        yield choice, reward, num_rewards, num_trials
-
-
-
 class Controller:
     '''
     Utility class to manage the RNN Controller
@@ -242,6 +206,8 @@ class Controller:
 
         self.reward_buffer = []
         self.state_buffer = []
+
+        self.state_input = 2
 
         self.cell_outputs = []
         self.policy_classifiers = []
@@ -301,15 +267,15 @@ class Controller:
         with self.policy_session.as_default():
             K.set_session(self.policy_session)
 
-            with tf.name_scope('controller_multiarmed'):
-                with tf.variable_scope('policy_network_multiarmed'):
+            with tf.name_scope('controller'):
+                with tf.variable_scope('policy_network'):
 
                     # state input is the first input fed into the controller RNN.
                     # the rest of the inputs are fed to the RNN internally
-                    with tf.name_scope('state_input'):
-                        state_input = tf.placeholder(dtype=tf.int32, shape=(1, None), name='state_input')
+                    #with tf.name_scope('state_input'):
+                        #state_input = tf.placeholder(dtype=tf.int32, shape=(1, None), name='state_input')
 
-                    self.state_input = state_input
+                    state_input = self.state_input
 
                     # we can use LSTM as the controller as well
                     nas_cell = tf.nn.rnn_cell.LSTMCell(self.controller_cells)
@@ -365,13 +331,13 @@ class Controller:
                                                            name='cell_output_%d' % (i))
 
                             cell_state = final_state
-
+                        import pdb; pdb.set_trace()
                         # store the tensors for later loss computation
                         self.cell_outputs.append(cell_input)
                         self.policy_classifiers.append(classifier)
                         self.policy_actions.append(preds)
 
-            policy_net_variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='policy_network_multiarmed')
+            policy_net_variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='policy_network')
 
             with tf.name_scope('optimizer'):
                 self.global_step = tf.Variable(0, trainable=False)
@@ -384,7 +350,7 @@ class Controller:
                 self.optimizer = tf.train.RMSPropOptimizer(learning_rate=learning_rate)
 
             with tf.name_scope('losses'):
-                self.discounted_rewards = tf.placeholder(tf.float32, shape=(None,), name='discounted_rewards')
+                #self.discounted_rewards = tf.placeholder(tf.float32, shape=(None,), name='discounted_rewards')
                 tf.summary.scalar('discounted_reward', tf.reduce_sum(self.discounted_rewards))
 
                 # calculate sum of all the individual classifiers
@@ -395,12 +361,10 @@ class Controller:
                     size = state_space['size']
 
                     with tf.name_scope('state_%d' % (i + 1)):
-                        labels = tf.placeholder(dtype=tf.float32, shape=(None, size), name='cell_label_%d' % i)
+                        #labels = tf.placeholder(dtype=tf.float32, shape=(None, size), name='cell_label_%d' % i)
                         self.policy_labels.append(labels)
-
                         ce_loss = tf.nn.softmax_cross_entropy_with_logits_v2(logits=classifier, labels=labels)
                         tf.summary.scalar('state_%d_ce_loss' % (i + 1), tf.reduce_mean(ce_loss))
-
                     cross_entropy_loss += ce_loss
 
                 policy_gradient_loss = tf.reduce_mean(cross_entropy_loss)
@@ -426,7 +390,7 @@ class Controller:
                             self.gradients[i] = (grad * self.discounted_rewards, var)
 
                 # training update
-                with tf.name_scope("train_policy_network_multiarmed"):
+                with tf.name_scope("train_policy_network"):
                     # apply gradients to update policy network
                     self.train_op = self.optimizer.apply_gradients(self.gradients, global_step=self.global_step)
 
@@ -441,7 +405,7 @@ class Controller:
             self.saver = tf.train.Saver(max_to_keep=1)
 
             if self.restore_controller:
-                path = tf.train.latest_checkpoint('weights_multiarmed/')
+                path = tf.train.latest_checkpoint('weights/')
 
                 if path is not None and tf.train.checkpoint_exists(path):
                     print("Loading Controller Checkpoint !")
@@ -453,7 +417,7 @@ class Controller:
 
         # dump buffers to file if it grows larger than 50 items
         if len(self.reward_buffer) > 20:
-            with open('buffers_multiarmed.txt', mode='a+') as f:
+            with open('buffers.txt', mode='a+') as f:
                 for i in range(20):
                     state_ = self.state_buffer[i]
                     state_list = self.state_space.parse_state_space_list(state_)
@@ -461,7 +425,7 @@ class Controller:
 
                     f.write("%0.4f,%s\n" % (self.reward_buffer[i], state_list))
 
-                print("Saved buffers to file `buffers_multiarmed.txt` !")
+                print("Saved buffers to file `buffers.txt` !")
 
             self.reward_buffer = [self.reward_buffer[-1]]
             self.state_buffer = [self.state_buffer[-1]]
@@ -475,17 +439,10 @@ class Controller:
         '''
         rewards = np.asarray(self.reward_buffer)
         discounted_rewards = np.zeros_like(rewards)
-        pull, num_bandits = make_bandits(rewards)
-        play = bayesian_strategy(pull, num_bandits)
-        rew = 0
-        for _ in range(1000):
-            choice, reward, num_rewards, num_trials = next(play)
-            rew = reward
-        running_add = rew
-        print("Expected multiarmed bandit reward: ", running_add)
+        running_add = 0
         for t in reversed(range(0, rewards.size)):
             if rewards[t] != 0:
-                running_add = rew
+                running_add = 0
             running_add = running_add * self.discount_factor + rewards[t]
             discounted_rewards[t] = running_add
         return discounted_rewards[-1]
@@ -525,7 +482,8 @@ class Controller:
         # of the Controller outputs
         for i, label in enumerate(label_list):
             feed_dict[self.policy_labels[i]] = label
-
+        import pdb;
+        pdb.set_trace()
         with self.policy_session.as_default():
             K.set_session(self.policy_session)
 
@@ -536,7 +494,7 @@ class Controller:
                                                                      feed_dict=feed_dict)
 
             self.summary_writer.add_summary(summary, global_step)
-            self.saver.save(self.policy_session, save_path='weights_multiarmed/controller.ckpt', global_step=self.global_step)
+            self.saver.save(self.policy_session, save_path='weights/controller.ckpt', global_step=self.global_step)
 
             # reduce exploration after many train steps
             if global_step != 0 and global_step % 10 == 0 and self.exploration > 0.3:
@@ -545,7 +503,7 @@ class Controller:
         return loss
 
     def remove_files(self):
-        files = ['train_multiarmed_history.csv', 'buffers_multiarmed.txt']
+        files = ['train_history.csv', 'buffers.txt']
 
         for file in files:
             if os.path.exists(file):
