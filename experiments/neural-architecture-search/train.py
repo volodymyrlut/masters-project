@@ -1,25 +1,19 @@
 import numpy as np
-import csv
-
-import tensorflow as tf
-from keras import backend as K
 from keras.datasets import cifar10
 from keras.utils import to_categorical
-
-from controller import Controller, StateSpace
+import csv
+import math
+from controller import DQN, StateSpace, ReplayMemory
+import torch.optim as optim
+import torch
+import random
+import matplotlib
+import matplotlib.pyplot as plt
 from manager import NetworkManager
 from model import model_fn
 
-
-# create a shared session between Keras and Tensorflow
-
-tf.reset_default_graph()
-tf.config.experimental_run_functions_eagerly(True)
-
-policy_sess = tf.Session()
-K.set_session(policy_sess)
-
 NUM_LAYERS = 4  # number of layers of the state space
+STATE_DIMENSIONALITY = 2 # CONST; basically filters and kernels
 MAX_TRIALS = 100  # maximum number of models generated
 
 MAX_EPOCHS = 20  # maximum number of epochs to train
@@ -32,12 +26,22 @@ ACCURACY_BETA = 0.8  # beta value for the moving average of the accuracy
 CLIP_REWARDS = 0.0  # clip rewards in the [-0.05, 0.05] range
 RESTORE_CONTROLLER = True  # restore controller to continue training
 
+# set up matplotlib
+is_ipython = 'inline' in matplotlib.get_backend()
+if is_ipython:
+    from IPython import display
+
+plt.ion()
+
+# if gpu is to be used
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 # construct a state space
 state_space = StateSpace()
 
 # add states
-state_space.add_state(name='kernel', values=[1, 3])
-state_space.add_state(name='filters', values=[16, 32, 64])
+state_space.add_state(name='kernel', values=[1, 3, 6, 9, 12, 24])
+state_space.add_state(name='filters', values=[2, 4, 8, 16, 32, 64])
 
 # print the state space being searched
 state_space.print_state_space()
@@ -54,62 +58,123 @@ dataset = [x_train, y_train, x_test, y_test]  # pack the dataset for the Network
 previous_acc = 0.0
 total_reward = 0.0
 
-with policy_sess.as_default():
-    # create the Controller and build the internal policy network
-    controller = Controller(policy_sess, NUM_LAYERS, state_space,
-                            reg_param=REGULARIZATION,
-                            exploration=EXPLORATION,
-                            controller_cells=CONTROLLER_CELLS,
-                            embedding_dim=EMBEDDING_DIM,
-                            restore_controller=RESTORE_CONTROLLER)
+GAMMA = 0.999
+EPS_START = 0.9
+EPS_END = 0.05
+EPS_DECAY = 200
+TARGET_UPDATE = 10
+
+# Get screen size so that we can initialize layers correctly based on shape
+# returned from AI gym. Typical dimensions at this point are close to 3x40x90
+# which is the result of a clamped and down-scaled render buffer in get_screen()
+
+# Get number of actions from gym action space
+n_actions = math.factorial(NUM_LAYERS) * (state_space.total_combinations)
+
+policy_net = DQN(NUM_LAYERS * STATE_DIMENSIONALITY, 1, n_actions).to(device)
+target_net = DQN(NUM_LAYERS * STATE_DIMENSIONALITY, 1, n_actions).to(device)
+target_net.load_state_dict(policy_net.state_dict())
+target_net.eval()
+
+optimizer = optim.RMSprop(policy_net.parameters())
+memory = ReplayMemory(25)
+
+
+steps_done = 0
+
+# episode_durations = []
+
+
+# def plot_durations():
+#     plt.figure(2)
+#     plt.clf()
+#     durations_t = torch.tensor(episode_durations, dtype=torch.float)
+#     plt.title('Training...')
+#     plt.xlabel('Episode')
+#     plt.ylabel('Duration')
+#     plt.plot(durations_t.numpy())
+#     # Take 100 episode averages and plot them too
+#     if len(durations_t) >= 100:
+#         means = durations_t.unfold(0, 100, 1).mean(1).view(-1)
+#         means = torch.cat((torch.zeros(99), means))
+#         plt.plot(means.numpy())
+#
+#     plt.pause(0.001)  # pause a bit so that plots are updated
+#     if is_ipython:
+#         display.clear_output(wait=True)
+#         display.display(plt.gcf())
+
+
+state = state_space.get_random_state_space(NUM_LAYERS)
+print("Initial Random State : ", state_space.parse_state_space_list(state))
+print()
 
 # create the Network Manager
 manager = NetworkManager(dataset, epochs=MAX_EPOCHS, child_batchsize=CHILD_BATCHSIZE, clip_rewards=CLIP_REWARDS,
                          acc_beta=ACCURACY_BETA)
 
-# get an initial random state space if controller needs to predict an
-# action from the initial state
-state = state_space.get_random_state_space(NUM_LAYERS)
-print("Initial Random State : ", state_space.parse_state_space_list(state))
-print()
 
-# clear the previous files
-controller.remove_files()
+def get_action(state):
+    '''
+    Gets a one hot encoded action list, either from random sampling or from
+    the Controller RNN
 
-# train for number of trails
-for trial in range(MAX_TRIALS):
-    with policy_sess.as_default():
-        K.set_session(policy_sess)
-        actions = controller.get_action(state)  # get an action for the previous state
+    Args:
+        state: a list of one hot encoded states, whose first value is used as initial
+            state for the controller RNN
 
-    # print the action probabilities
-    state_space.print_actions(actions)
-    print("Predicted actions : ", state_space.parse_state_space_list(actions))
+    Returns:
+        A one hot encoded action list
+    '''
+    global steps_done
+    sample = random.random()
+    eps_threshold = EPS_END + (EPS_START - EPS_END) * \
+                              math.exp(-1. * steps_done / EPS_DECAY)
+    steps_done += 1
+    if sample > eps_threshold:
+        print("Generating random action to explore")
+        actions = []
 
+        for i in range(STATE_DIMENSIONALITY * NUM_LAYERS):
+            state_ = state_space[i]
+            size = state_['size']
+
+            sample = np.random.choice(size, size=1)
+            sample = state_['index_map_'][sample[0]]
+            action = state_space.embedding_encode(i, sample)
+            actions.append(action)
+        return actions
+
+    else:
+        print("Prediction action from Controller")
+        import pdb; pdb.set_trace()
+        return policy_net(torch.FloatTensor(state)).max(1)
+
+for i_episode in range(MAX_TRIALS):
+    # Initialize the environment and state
+
+    action = get_action(state)
+    state_space.print_actions(action)
     # build a model, train and get reward and accuracy from the network manager
-    reward, previous_acc = manager.get_rewards(model_fn, state_space.parse_state_space_list(actions))
+    reward, previous_acc = manager.get_rewards(model_fn, state_space.parse_state_space_list(action))
     print("Rewards : ", reward, "Accuracy : ", previous_acc)
 
-    with policy_sess.as_default():
-        K.set_session(policy_sess)
+    total_reward += reward
+    print("Total reward : ", total_reward)
 
-        total_reward += reward
-        print("Total reward : ", total_reward)
+    # Store the transition in memory
+    memory.push(state, action, reward)
 
-        # actions and states are equivalent, save the state and reward
-        state = actions
-        controller.store_rollout(state, reward)
+    # Move to the next state
+    # actions and states are equivalent, save the state and reward
+    state = action
 
-        # train the controller on the saved state and the discounted rewards
-        loss = controller.train_step()
-        print("Trial %d: Controller loss : %0.6f" % (trial + 1, loss))
+    # if done:
+    #     episode_durations.append(t + 1)
+    #     plot_durations()
+    #     break
 
-        # write the results of this trial into a file
-        with open('train_history.csv', mode='a+') as f:
-            data = [previous_acc, reward]
-            data.extend(state_space.parse_state_space_list(state))
-            writer = csv.writer(f)
-            writer.writerow(data)
-    print()
 
-print("Total Reward : ", total_reward)
+print('Complete')
+plt.ioff()
+plt.show()
