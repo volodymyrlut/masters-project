@@ -71,7 +71,7 @@ class NetworkManager:
             model.fit(X_train, y_train, batch_size=self.batchsize, epochs=self.epochs,
                       verbose=0, validation_data=(X_val, y_val),
                       callbacks=[ModelCheckpoint('weights/temp_network.h5',
-                                                 monitor='val_acc', verbose=0,
+                                                 monitor='val_acc', verbose=2,
                                                  save_best_only=True,
                                                  save_weights_only=True)])
 
