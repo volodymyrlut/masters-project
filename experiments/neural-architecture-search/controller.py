@@ -226,10 +226,11 @@ class DQN(nn.Module):
         super(DQN, self).__init__()
         self.conv1 = nn.Conv2d(1, 8, kernel_size=2)
         self.bn1 = nn.BatchNorm2d(8)
-        self.conv2 = nn.Conv2d(8, 32, kernel_size=2)
-        self.bn2 = nn.BatchNorm2d(32)
-        self.conv3 = nn.Conv2d(32, 32, kernel_size=2)
-        self.bn3 = nn.BatchNorm2d(32)
+        self.conv2 = nn.Conv2d(8, 48, kernel_size=2)
+        self.bn2 = nn.BatchNorm2d(48)
+        self.conv3 = nn.Conv2d(48, 48, kernel_size=2)
+        self.bn3 = nn.BatchNorm2d(48)
+        self.head = nn.Linear(720, outputs)
 
     # Called with either one element to determine next action, or a batch
     # during optimization. Returns tensor([[left0exp,right0exp]...]).
@@ -238,3 +239,7 @@ class DQN(nn.Module):
         x = F.relu(self.bn2(self.conv2(x)))
         x = F.relu(self.bn3(self.conv3(x)))
         return self.head(x.view(x.size(0), -1))
+
+# policy_net = DQN(3, 1, n_actions)
+# policy_net(torch.FloatTensor(state).unsqueeze(0).reshape(1, 1, 8, 6)).max(1)
+# state_space.parse_state_space_list(res.view(8, 18, 6).max(1)[0].view(8, 1, 6).detach().numpy())

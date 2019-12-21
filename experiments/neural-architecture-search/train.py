@@ -1,5 +1,5 @@
 import numpy as np
-from keras.datasets import cifar10
+#from keras.datasets import cifar10
 from keras.utils import to_categorical
 import csv
 import math
@@ -147,7 +147,7 @@ def get_action(state):
 
     else:
         print("Prediction action from Controller")
-        import pdb; pdb.set_trace()
+        # state_space.parse_state_space_list(res.view(8, 18, 6).max(1)[0].view(8, 1, 6).detach().numpy())
         return policy_net(torch.FloatTensor(state)).max(1)
 
 for i_episode in range(MAX_TRIALS):
