@@ -151,7 +151,10 @@ def get_action(state):
         input_height = NUM_LAYERS * STATE_DIMENSIONALITY
         reshaped_state = torch.FloatTensor(state).unsqueeze(0).reshape(1, 1, input_height, NUM_ACTIONS)
         res = policy_net(reshaped_state.to(device))
-        actions_that_will_be_performed = state_space.parse_state_space_list(res.view(input_height, int(n_actions / (input_height * NUM_ACTIONS)), NUM_ACTIONS).max(1)[0].view(input_height, 1, NUM_ACTIONS).detach().cpu().numpy())
+        reshaped_res = res.view(input_height, int(n_actions / (input_height * NUM_ACTIONS)), NUM_ACTIONS).max(1)[
+            0].view(input_height, 1, NUM_ACTIONS).detach().cpu().numpy()
+        print(reshaped_res)
+        actions_that_will_be_performed = state_space.parse_state_space_list(reshaped_res)
         actions = []
         for i in range(STATE_DIMENSIONALITY * NUM_LAYERS):
             sample = actions_that_will_be_performed[i]
