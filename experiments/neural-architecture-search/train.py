@@ -153,8 +153,8 @@ def get_action(state):
         res = policy_net(reshaped_state.to(device))
         reshaped_res = res.view(input_height, int(n_actions / (input_height * NUM_ACTIONS)), NUM_ACTIONS).max(1)[
             0].view(input_height, 1, NUM_ACTIONS).detach().cpu().numpy()
-        print(reshaped_res)
         actions_that_will_be_performed = state_space.parse_state_space_list(reshaped_res)
+        print(actions_that_will_be_performed)
         actions = []
         for i in range(STATE_DIMENSIONALITY * NUM_LAYERS):
             sample = actions_that_will_be_performed[i]
@@ -162,19 +162,30 @@ def get_action(state):
             actions.append(action)
         return actions
 
+PERFORMED_ACTIONS_LIST = []
+
 for i_episode in range(MAX_TRIALS):
     # Initialize the environment and state
     action = get_action(state)
     state_space.print_actions(action)
     # build a model, train and get reward and accuracy from the network manager
-    reward, previous_acc = manager.get_rewards(model_fn, state_space.parse_state_space_list(action))
-    print("Rewards : ", reward, "Accuracy : ", previous_acc)
-
-    total_reward += reward
-    print("Total reward : ", total_reward)
+    current_action = state_space.parse_state_space_list(action)
+    current_action_str = "-".join(map(str, current_action))
+    PERFORMED_ACTIONS_LIST.append(current_action_str)
+    times_action_was_played = PERFORMED_ACTIONS_LIST.count(current_action_str)
+    reward, previous_acc = manager.get_rewards(model_fn, current_action)
+    print("Reward received from network manager: ", reward, "Accuracy of CNN trained: ", previous_acc)
+    ucb_reward = 0
+    if(i_episode > 0):
+      ucb_reward = math.sqrt((2.0 * math.log(i_episode)) / times_action_was_played)
+    # Because of append to PERFORMED_ACTIONS_LIST above, division by 0 is impossible
+    updated_reward = reward + ucb_reward
+    print("Number of time action was played: ", times_action_was_played, "Updared_reward: ", updated_reward)
+    total_reward += updated_reward
+    print("Total reward: ", total_reward)
 
     # Store the transition in memory
-    memory.push(state, action, reward)
+    memory.push(state, action, updated_reward)
 
     # Move to the next state
     # actions and states are equivalent, save the state and reward
