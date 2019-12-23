@@ -1,5 +1,5 @@
 import numpy as np
-#from keras.datasets import cifar10
+from keras.datasets import cifar10
 from keras.utils import to_categorical
 import csv
 import math
@@ -15,6 +15,7 @@ from model import model_fn
 NUM_LAYERS = 4  # number of layers of the state space
 STATE_DIMENSIONALITY = 2 # CONST; basically filters and kernels
 MAX_TRIALS = 100  # maximum number of models generated
+NUM_ACTIONS = 6 # number of available filter and kernel sizes
 
 MAX_EPOCHS = 20  # maximum number of epochs to train
 CHILD_BATCHSIZE = 128  # batchsize of the child models
@@ -71,8 +72,8 @@ TARGET_UPDATE = 10
 # Get number of actions from gym action space
 n_actions = math.factorial(NUM_LAYERS) * (state_space.total_combinations)
 
-policy_net = DQN(NUM_LAYERS * STATE_DIMENSIONALITY, 1, n_actions).to(device)
-target_net = DQN(NUM_LAYERS * STATE_DIMENSIONALITY, 1, n_actions).to(device)
+policy_net = DQN(NUM_LAYERS * STATE_DIMENSIONALITY, NUM_ACTIONS, n_actions).to(device)
+target_net = DQN(NUM_LAYERS * STATE_DIMENSIONALITY, NUM_ACTIONS, n_actions).to(device)
 target_net.load_state_dict(policy_net.state_dict())
 target_net.eval()
 
@@ -131,7 +132,7 @@ def get_action(state):
     eps_threshold = EPS_END + (EPS_START - EPS_END) * \
                               math.exp(-1. * steps_done / EPS_DECAY)
     steps_done += 1
-    if sample > eps_threshold:
+    if sample <= eps_threshold:
         print("Generating random action to explore")
         actions = []
 
@@ -147,12 +148,19 @@ def get_action(state):
 
     else:
         print("Prediction action from Controller")
-        # state_space.parse_state_space_list(res.view(8, 18, 6).max(1)[0].view(8, 1, 6).detach().numpy())
-        return policy_net(torch.FloatTensor(state)).max(1)
+        input_height = NUM_LAYERS * STATE_DIMENSIONALITY
+        reshaped_state = torch.FloatTensor(state).unsqueeze(0).reshape(1, 1, input_height, NUM_ACTIONS)
+        res = policy_net(reshaped_state.to(device))
+        actions_that_will_be_performed = state_space.parse_state_space_list(res.view(input_height, int(n_actions / (input_height * NUM_ACTIONS)), NUM_ACTIONS).max(1)[0].view(input_height, 1, NUM_ACTIONS).detach().cpu().numpy())
+        actions = []
+        for i in range(STATE_DIMENSIONALITY * NUM_LAYERS):
+            sample = actions_that_will_be_performed[i]
+            action = state_space.embedding_encode(i, sample)
+            actions.append(action)
+        return actions
 
 for i_episode in range(MAX_TRIALS):
     # Initialize the environment and state
-
     action = get_action(state)
     state_space.print_actions(action)
     # build a model, train and get reward and accuracy from the network manager
