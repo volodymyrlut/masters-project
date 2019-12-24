@@ -3,7 +3,7 @@ from keras.datasets import cifar10
 from keras.utils import to_categorical
 import csv
 import math
-from controller import DQN, StateSpace, ReplayMemory
+from controller import DQN, StateSpace, ReplayMemory, Transition
 import torch.optim as optim
 import torch
 import random
@@ -11,11 +11,12 @@ import matplotlib
 import matplotlib.pyplot as plt
 from manager import NetworkManager
 from model import model_fn
+import torch.nn.functional as F
 
 NUM_LAYERS = 4  # number of layers of the state space
-STATE_DIMENSIONALITY = 2 # CONST; basically filters and kernels
+STATE_DIMENSIONALITY = 2  # CONST; basically filters and kernels
 MAX_TRIALS = 100  # maximum number of models generated
-NUM_ACTIONS = 6 # number of available filter and kernel sizes
+NUM_ACTIONS = 6  # number of available filter and kernel sizes
 
 MAX_EPOCHS = 20  # maximum number of epochs to train
 CHILD_BATCHSIZE = 128  # batchsize of the child models
@@ -26,6 +27,12 @@ EMBEDDING_DIM = 20  # dimension of the embeddings for each state
 ACCURACY_BETA = 0.8  # beta value for the moving average of the accuracy
 CLIP_REWARDS = 0.0  # clip rewards in the [-0.05, 0.05] range
 RESTORE_CONTROLLER = True  # restore controller to continue training
+GAMMA = 0.999
+EPS_START = 0.1
+EPS_END = 0.05
+EPS_DECAY = 200
+TARGET_UPDATE = 2
+BATCH_SIZE = 1
 
 # set up matplotlib
 is_ipython = 'inline' in matplotlib.get_backend()
@@ -59,12 +66,6 @@ dataset = [x_train, y_train, x_test, y_test]  # pack the dataset for the Network
 previous_acc = 0.0
 total_reward = 0.0
 
-GAMMA = 0.999
-EPS_START = 0.1
-EPS_END = 0.05
-EPS_DECAY = 200
-TARGET_UPDATE = 10
-
 # Get screen size so that we can initialize layers correctly based on shape
 # returned from AI gym. Typical dimensions at this point are close to 3x40x90
 # which is the result of a clamped and down-scaled render buffer in get_screen()
@@ -79,7 +80,6 @@ target_net.eval()
 
 optimizer = optim.RMSprop(policy_net.parameters())
 memory = ReplayMemory(25)
-
 
 steps_done = 0
 
@@ -162,7 +162,55 @@ def get_action(state):
             actions.append(action)
         return actions
 
+
 PERFORMED_ACTIONS_LIST = []
+
+
+def optimize_model():
+    if len(memory) < BATCH_SIZE:
+        return
+    transitions = memory.sample(BATCH_SIZE)
+    # Transpose the batch (see https://stackoverflow.com/a/19343/3343043 for
+    # detailed explanation). This converts batch-array of Transitions
+    # to Transition of batch-arrays.
+    batch = Transition(*zip(*transitions))
+
+    # Compute a mask of non-final states and concatenate the batch elements
+    # (a final state would've been the one after which simulation ended)
+    state_batch = torch.cat(batch.state)
+    action_batch = torch.cat(batch.action)
+    reward_batch = torch.cat(batch.reward)
+
+    non_final_mask = torch.tensor(tuple(map(lambda s: s is not None,
+                                            state_batch)), device=device, dtype=torch.uint8)
+
+    # Compute Q(s_t, a) - the model computes Q(s_t), then we select the
+    # columns of actions taken. These are the actions which would've been taken
+    # for each batch state according to policy_net
+    input_height = NUM_LAYERS * STATE_DIMENSIONALITY
+    state_batch_reshaped = torch.FloatTensor(state_batch).unsqueeze(0).reshape(1, 1, input_height, NUM_ACTIONS).to(
+        device)
+    state_action_values = policy_net(state_batch_reshaped)
+
+    # Compute V(s_{t+1}) for all next states.
+    # Expected values of actions for non_final_next_states are computed based
+    # on the "older" target_net; selecting their best reward with max(1)[0].
+    # This is merged based on the mask, such that we'll have either the expected
+    # state value or 0 in case the state was final.
+    next_state_values = target_net(state_batch_reshaped)
+    # Compute the expected Q values
+    expected_state_action_values = (next_state_values * GAMMA) + reward_batch.to(device)
+
+    # Compute Huber loss
+    loss = F.smooth_l1_loss(state_action_values, expected_state_action_values.unsqueeze(1))
+
+    # Optimize the model
+    optimizer.zero_grad()
+    loss.backward()
+    for param in policy_net.parameters():
+        param.grad.data.clamp_(-1, 1)
+    optimizer.step()
+
 
 for i_episode in range(MAX_TRIALS):
     # Initialize the environment and state
@@ -176,8 +224,8 @@ for i_episode in range(MAX_TRIALS):
     reward, previous_acc = manager.get_rewards(model_fn, current_action)
     print("Reward received from network manager: ", reward, "Accuracy of CNN trained: ", previous_acc)
     ucb_reward = 0
-    if(i_episode > 0):
-      ucb_reward = math.sqrt((2.0 * math.log(i_episode)) / times_action_was_played)
+    if (i_episode > 0):
+        ucb_reward = math.sqrt((2.0 * math.log(i_episode)) / times_action_was_played)
     # Because of append to PERFORMED_ACTIONS_LIST above, division by 0 is impossible
     updated_reward = reward + ucb_reward
     print("Number of time action was played: ", times_action_was_played, "Updared_reward: ", updated_reward)
@@ -185,8 +233,12 @@ for i_episode in range(MAX_TRIALS):
     print("Total reward: ", total_reward)
 
     # Store the transition in memory
-    memory.push(state, action, updated_reward)
+    memory.push(torch.FloatTensor(state), torch.FloatTensor(action), torch.FloatTensor([updated_reward]))
+    optimize_model()
 
+    # Update the target network, copying all weights and biases in DQN
+    if i_episode % TARGET_UPDATE == 0:
+        target_net.load_state_dict(policy_net.state_dict())
     # Move to the next state
     # actions and states are equivalent, save the state and reward
     state = action
@@ -195,7 +247,6 @@ for i_episode in range(MAX_TRIALS):
     #     episode_durations.append(t + 1)
     #     plot_durations()
     #     break
-
 
 print('Complete')
 plt.ioff()
