@@ -11,6 +11,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from manager import NetworkManager
 from model import model_fn
+import torch.nn as nn
 import torch.nn.functional as F
 
 NUM_LAYERS = 4  # number of layers of the state space
@@ -165,6 +166,9 @@ def get_action(state):
 
 PERFORMED_ACTIONS_LIST = []
 
+distribution_mu = nn.Linear(n_actions, 1)
+distribution_presigma = nn.Linear(n_actions, 1)
+distribution_sigma = nn.Softplus()
 
 def optimize_model():
     if len(memory) < BATCH_SIZE:
@@ -202,7 +206,16 @@ def optimize_model():
     expected_state_action_values = (next_state_values * GAMMA) + reward_batch.to(device)
 
     # Compute Huber loss
-    loss = F.smooth_l1_loss(state_action_values, expected_state_action_values.unsqueeze(1))
+    #loss = F.smooth_l1_loss(state_action_values, expected_state_action_values.unsqueeze(1))
+
+    pre_sigma = distribution_presigma(next_state_values)
+    mu = distribution_mu(next_state_values)
+    sigma = distribution_sigma(next_state_values)
+
+    zero_index = (next_state_values != 0)
+    distribution = torch.distributions.normal.Normal(mu[zero_index], sigma[zero_index])
+    likelihood = distribution.log_prob(next_state_values[zero_index])
+    loss = -torch.mean(likelihood)
 
     # Optimize the model
     optimizer.zero_grad()
