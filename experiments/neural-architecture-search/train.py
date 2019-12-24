@@ -166,9 +166,10 @@ def get_action(state):
 
 PERFORMED_ACTIONS_LIST = []
 
-distribution_mu = nn.Linear(n_actions, 1)
-distribution_presigma = nn.Linear(n_actions, 1)
-distribution_sigma = nn.Softplus()
+distribution_mu = nn.Linear(n_actions, 1).to(device)
+distribution_presigma = nn.Linear(n_actions, 1).to(device)
+distribution_sigma = nn.Softplus().to(device)
+
 
 def optimize_model():
     if len(memory) < BATCH_SIZE:
@@ -206,27 +207,31 @@ def optimize_model():
     expected_state_action_values = (next_state_values * GAMMA) + reward_batch.to(device)
 
     # Compute Huber loss
-    #loss = F.smooth_l1_loss(state_action_values, expected_state_action_values.unsqueeze(1))
+    # loss = F.smooth_l1_loss(state_action_values, expected_state_action_values.unsqueeze(1))
 
-    pre_sigma = distribution_presigma(next_state_values)
-    mu = distribution_mu(next_state_values)
-    sigma = distribution_sigma(next_state_values)
+    pre_sigma = distribution_presigma(next_state_values.to(device))
+    mu = distribution_mu(next_state_values.to(device))
+    sigma = distribution_sigma(next_state_values.to(device))
 
     zero_index = (next_state_values != 0)
-    distribution = torch.distributions.normal.Normal(mu[zero_index], sigma[zero_index])
+    distribution = torch.distributions.normal.Normal(mu, sigma[zero_index])
     likelihood = distribution.log_prob(next_state_values[zero_index])
     loss = -torch.mean(likelihood)
 
     # Optimize the model
     optimizer.zero_grad()
     loss.backward()
+
     for param in policy_net.parameters():
-        param.grad.data.clamp_(-1, 1)
+        if param.grad is not None:
+            param.grad.data.clamp_(-1, 1)
     optimizer.step()
 
 
 for i_episode in range(MAX_TRIALS):
     # Initialize the environment and state
+    print("=========")
+    print("Episode ", i_episode)
     action = get_action(state)
     state_space.print_actions(action)
     # build a model, train and get reward and accuracy from the network manager
