@@ -9,7 +9,7 @@ class NetworkManager:
     '''
     Helper class to manage the generation of subnetwork training given a dataset
     '''
-    def __init__(self, dataset, epochs=5, child_batchsize=128, acc_beta=0.8, clip_rewards=0.0):
+    def __init__(self, dataset, type = 'cifar10', controller = 'classic', epochs=5, child_batchsize=128, acc_beta=0.8, clip_rewards=0.0):
         '''
         Manager which is tasked with creating subnetworks, training them on a dataset, and retrieving
         rewards in the term of accuracy, which is passed to the controller RNN.
@@ -30,6 +30,9 @@ class NetworkManager:
         self.beta = acc_beta
         self.beta_bias = acc_beta
         self.moving_acc = 0.0
+
+        self.controller = controller
+        self.type = type
 
     def get_rewards(self, model_fn, actions):
         '''
@@ -61,7 +64,7 @@ class NetworkManager:
             K.set_session(network_sess)
 
             # generate a submodel given predicted actions
-            model = model_fn(actions)  # type: Model
+            model = model_fn(actions, self.type)  # type: Model
             model.compile('adam', 'categorical_crossentropy', metrics=['accuracy'])
 
             # unpack the dataset
@@ -70,13 +73,13 @@ class NetworkManager:
             # train the model using Keras methods
             model.fit(X_train, y_train, batch_size=self.batchsize, epochs=self.epochs,
                       verbose=0, validation_data=(X_val, y_val),
-                      callbacks=[ModelCheckpoint('weights/temp_network.h5',
+                      callbacks=[ModelCheckpoint(self.controller + '_weights_' + self.type + '_temp_network.h5',
                                                  monitor='val_acc', verbose=0,
                                                  save_best_only=True,
                                                  save_weights_only=True)])
 
             # load best performance epoch in this training session
-            model.load_weights('weights/temp_network.h5')
+            model.load_weights(self.controller + '_weights_' + self.type + '_temp_network.h5')
 
             # evaluate the model
             loss, acc = model.evaluate(X_val, y_val, batch_size=self.batchsize)
