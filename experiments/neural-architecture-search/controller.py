@@ -216,7 +216,6 @@ class StateSpace:
 
 class DQN(nn.Module):
     def __init__(self, h, w, outputs):
-        print("LOOOOL")
         super(DQN, self).__init__()
         self.conv1 = nn.Conv2d(1, 8, kernel_size=2)
         self.bn1 = nn.BatchNorm2d(8)
@@ -227,10 +226,6 @@ class DQN(nn.Module):
         input_size = (h + w + 1) * 48
 
         self.relu = nn.ReLU()
-        self.distribution_mu = nn.Linear(outputs, 1)
-        self.distribution_presigma = nn.Linear(outputs, 1)
-        self.distribution_sigma = nn.Softplus()
-
         self.head = nn.Linear(input_size, outputs)
 
     # Called with either one element to determine next action, or a batch
@@ -239,10 +234,7 @@ class DQN(nn.Module):
         x = F.relu(self.bn1(self.conv1(x)))
         x = F.relu(self.bn2(self.conv2(x)))
         x = F.relu(self.bn3(self.conv3(x)))
-        pre_sigma = self.distribution_presigma(x)
-        mu = self.distribution_mu(x)
-        sigma = self.distribution_sigma(pre_sigma)
-        return sigma, mu, self.head(x.view(x.size(0), -1))
+        return self.head(x.view(x.size(0), -1))
 
 #
 # state_space.parse_state_space_list(res.view(8, 18, 6).max(1)[0].view(8, 1, 6).detach().numpy())

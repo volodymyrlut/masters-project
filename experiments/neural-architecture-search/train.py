@@ -1,27 +1,25 @@
 import numpy as np
-from keras.datasets import cifar10
+from keras.datasets import cifar10, cifar100, mnist
 from keras.utils import to_categorical
-import csv
 import math
 from controller import DQN, StateSpace, ReplayMemory, Transition
 import torch.optim as optim
 import torch
 import random
-import matplotlib
-import matplotlib.pyplot as plt
 from manager import NetworkManager
 from model import model_fn
 import torch.nn as nn
 import torch.nn.functional as F
+import pandas as pd
 
 NUM_LAYERS = 4  # number of layers of the state space
 STATE_DIMENSIONALITY = 2  # CONST; basically filters and kernels
-MAX_TRIALS = 100  # maximum number of models generated
 NUM_ACTIONS = 6  # number of available filter and kernel sizes
 
-MAX_EPOCHS = 20  # maximum number of epochs to train
+MAX_TRIALS = 80  # maximum number of models generated
+MAX_EPOCHS = 8  # maximum number of epochs to train
 CHILD_BATCHSIZE = 128  # batchsize of the child models
-EXPLORATION = 0.1  # high exploration for the first 1000 steps
+EXPLORATION = 0.9  # high exploration for the first 1000 steps
 REGULARIZATION = 1e-3  # regularization strength
 CONTROLLER_CELLS = 32  # number of cells in RNN controller
 EMBEDDING_DIM = 20  # dimension of the embeddings for each state
@@ -29,18 +27,9 @@ ACCURACY_BETA = 0.8  # beta value for the moving average of the accuracy
 CLIP_REWARDS = 0.0  # clip rewards in the [-0.05, 0.05] range
 RESTORE_CONTROLLER = True  # restore controller to continue training
 GAMMA = 0.999
-EPS_START = 0.1
-EPS_END = 0.05
-EPS_DECAY = 200
-TARGET_UPDATE = 2
+
+TARGET_UPDATE = 10
 BATCH_SIZE = 1
-
-# set up matplotlib
-is_ipython = 'inline' in matplotlib.get_backend()
-if is_ipython:
-    from IPython import display
-
-plt.ion()
 
 # if gpu is to be used
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -55,17 +44,29 @@ state_space.add_state(name='filters', values=[2, 4, 8, 16, 32, 64])
 # print the state space being searched
 state_space.print_state_space()
 
-# prepare the training data for the NetworkManager
-(x_train, y_train), (x_test, y_test) = cifar10.load_data()
-x_train = x_train.astype('float32') / 255.
-x_test = x_test.astype('float32') / 255.
-y_train = to_categorical(y_train, 10)
-y_test = to_categorical(y_test, 10)
 
-dataset = [x_train, y_train, x_test, y_test]  # pack the dataset for the NetworkManager
+def construct_network_manager(type, controller):
+    # prepare the training data for the NetworkManager
+    dataset = cifar10
+    if type == 'cifar100':
+        dataset = cifar100
+    if type == 'mnist':
+        dataset = mnist
+    (x_train, y_train), (x_test, y_test) = dataset.load_data()
+    x_train = x_train.astype('float32') / 255.
+    x_test = x_test.astype('float32') / 255.
+    if type == 'cifar100':
+        y_train = to_categorical(y_train, 100)
+        y_test = to_categorical(y_test, 100)
+    else:
+        y_train = to_categorical(y_train, 10)
+        y_test = to_categorical(y_test, 10)
+    packed = [x_train, y_train, x_test, y_test]  # pack the dataset for the NetworkManager
+    manager = NetworkManager(dataset=packed, type=type, controller=controller, epochs=MAX_EPOCHS,
+                             child_batchsize=CHILD_BATCHSIZE, clip_rewards=CLIP_REWARDS,
+                             acc_beta=ACCURACY_BETA)
+    return manager
 
-previous_acc = 0.0
-total_reward = 0.0
 
 # Get screen size so that we can initialize layers correctly based on shape
 # returned from AI gym. Typical dimensions at this point are close to 3x40x90
@@ -80,43 +81,32 @@ target_net.load_state_dict(policy_net.state_dict())
 target_net.eval()
 
 optimizer = optim.RMSprop(policy_net.parameters())
-memory = ReplayMemory(25)
+memory = ReplayMemory(100)
+
+policy_net_gaussian = DQN(NUM_LAYERS * STATE_DIMENSIONALITY, NUM_ACTIONS, n_actions).to(device)
+target_net_gaussian = DQN(NUM_LAYERS * STATE_DIMENSIONALITY, NUM_ACTIONS, n_actions).to(device)
+target_net_gaussian.load_state_dict(policy_net_gaussian.state_dict())
+target_net_gaussian.eval()
+
+optimizer_gaussian = optim.RMSprop(policy_net_gaussian.parameters())
+memory_gaussian = ReplayMemory(100)
 
 steps_done = 0
 
-# episode_durations = []
-
-
-# def plot_durations():
-#     plt.figure(2)
-#     plt.clf()
-#     durations_t = torch.tensor(episode_durations, dtype=torch.float)
-#     plt.title('Training...')
-#     plt.xlabel('Episode')
-#     plt.ylabel('Duration')
-#     plt.plot(durations_t.numpy())
-#     # Take 100 episode averages and plot them too
-#     if len(durations_t) >= 100:
-#         means = durations_t.unfold(0, 100, 1).mean(1).view(-1)
-#         means = torch.cat((torch.zeros(99), means))
-#         plt.plot(means.numpy())
-#
-#     plt.pause(0.001)  # pause a bit so that plots are updated
-#     if is_ipython:
-#         display.clear_output(wait=True)
-#         display.display(plt.gcf())
-
-
+logs = pd.DataFrame(
+    {'action': [], 'dataset': [], 'accuracy': [], 'reward': [], 'total_reward': [], 'loss': [], 'iteration': [],
+     'mu': [], 'sigma': [], 'ucb_reward': [], 'controller': [], 'random': []})
+logs['action'] = logs.action.astype(str)
+logs['dataset'] = logs.dataset.astype(str)
+logs['controller'] = logs.controller.astype(str)
 state = state_space.get_random_state_space(NUM_LAYERS)
 print("Initial Random State : ", state_space.parse_state_space_list(state))
 print()
 
+
 # create the Network Manager
-manager = NetworkManager(dataset, epochs=MAX_EPOCHS, child_batchsize=CHILD_BATCHSIZE, clip_rewards=CLIP_REWARDS,
-                         acc_beta=ACCURACY_BETA)
 
-
-def get_action(state):
+def get_action(state, controller='classic'):
     '''
     Gets a one hot encoded action list, either from random sampling or from
     the Controller RNN
@@ -129,12 +119,13 @@ def get_action(state):
         A one hot encoded action list
     '''
     global steps_done
+    global EXPLORATION_RATE
     sample = random.random()
-    eps_threshold = EPS_END + (EPS_START - EPS_END) * \
-                              math.exp(-1. * steps_done / EPS_DECAY)
+
     steps_done += 1
-    if sample <= eps_threshold:
-        print("Generating random action to explore")
+    if sample <= EXPLORATION_RATE:
+        logs.at[logs.index[-1], 'random'] = 1
+        # print("Generating random action to explore")
         actions = []
 
         for i in range(STATE_DIMENSIONALITY * NUM_LAYERS):
@@ -148,14 +139,18 @@ def get_action(state):
         return actions
 
     else:
-        print("Prediction action from Controller")
+        logs.at[logs.index[-1], 'random'] = 0
+        pn = policy_net
+        if controller == 'gaussian':
+            pn = policy_net_gaussian
+        # print("Prediction action from Controller")
         input_height = NUM_LAYERS * STATE_DIMENSIONALITY
         reshaped_state = torch.FloatTensor(state).unsqueeze(0).reshape(1, 1, input_height, NUM_ACTIONS)
-        res = policy_net(reshaped_state.to(device))
+        res = pn(reshaped_state.to(device))
         reshaped_res = res.view(input_height, int(n_actions / (input_height * NUM_ACTIONS)), NUM_ACTIONS).max(1)[
             0].view(input_height, 1, NUM_ACTIONS).detach().cpu().numpy()
         actions_that_will_be_performed = state_space.parse_state_space_list(reshaped_res)
-        print(actions_that_will_be_performed)
+        # print(actions_that_will_be_performed)
         actions = []
         for i in range(STATE_DIMENSIONALITY * NUM_LAYERS):
             sample = actions_that_will_be_performed[i]
@@ -164,17 +159,24 @@ def get_action(state):
         return actions
 
 
-PERFORMED_ACTIONS_LIST = []
-
 distribution_mu = nn.Linear(n_actions, 1).to(device)
 distribution_presigma = nn.Linear(n_actions, 1).to(device)
 distribution_sigma = nn.Softplus().to(device)
 
 
-def optimize_model():
+def optimize_model(controller):
     if len(memory) < BATCH_SIZE:
         return
-    transitions = memory.sample(BATCH_SIZE)
+    pn = policy_net
+    tn = target_net
+    m = memory
+    o = optimizer
+    if controller == 'gaussian':
+        pn = policy_net_gaussian
+        m = memory_gaussian
+        tn = target_net_gaussian
+        o = optimizer_gaussian
+    transitions = m.sample(BATCH_SIZE)
     # Transpose the batch (see https://stackoverflow.com/a/19343/3343043 for
     # detailed explanation). This converts batch-array of Transitions
     # to Transition of batch-arrays.
@@ -195,77 +197,105 @@ def optimize_model():
     input_height = NUM_LAYERS * STATE_DIMENSIONALITY
     state_batch_reshaped = torch.FloatTensor(state_batch).unsqueeze(0).reshape(1, 1, input_height, NUM_ACTIONS).to(
         device)
-    state_action_values = policy_net(state_batch_reshaped)
+    state_action_values = pn(state_batch_reshaped)
 
     # Compute V(s_{t+1}) for all next states.
     # Expected values of actions for non_final_next_states are computed based
     # on the "older" target_net; selecting their best reward with max(1)[0].
     # This is merged based on the mask, such that we'll have either the expected
     # state value or 0 in case the state was final.
-    next_state_values = target_net(state_batch_reshaped)
+    next_state_values = tn(state_batch_reshaped)
     # Compute the expected Q values
     expected_state_action_values = (next_state_values * GAMMA) + reward_batch.to(device)
 
-    # Compute Huber loss
-    # loss = F.smooth_l1_loss(state_action_values, expected_state_action_values.unsqueeze(1))
+    loss = 0
 
-    pre_sigma = distribution_presigma(next_state_values.to(device))
-    mu = distribution_mu(next_state_values.to(device))
-    sigma = distribution_sigma(next_state_values.to(device))
+    if controller == 'gaussian':
+        # Compute gaussian loss
+        pre_sigma = distribution_presigma(next_state_values.to(device))
+        mu = distribution_mu(next_state_values.to(device))
+        sigma = distribution_sigma(next_state_values.to(device))
 
-    zero_index = (next_state_values != 0)
-    distribution = torch.distributions.normal.Normal(mu, sigma[zero_index])
-    likelihood = distribution.log_prob(next_state_values[zero_index])
-    loss = -torch.mean(likelihood)
-
+        zero_index = (next_state_values != 0)
+        distribution = torch.distributions.normal.Normal(mu, sigma[zero_index])
+        likelihood = distribution.log_prob(next_state_values[zero_index])
+        loss = -torch.mean(likelihood)
+        logs.at[logs.index[-1], 'loss'] = loss
+        logs.at[logs.index[-1], 'mu'] = mu
+        logs.at[logs.index[-1], 'sigma'] = torch.mean(sigma)
+    else:
+        # Compute Huber loss
+        loss = F.smooth_l1_loss(state_action_values, expected_state_action_values.unsqueeze(1))
+        logs.at[logs.index[-1], 'loss'] = loss
     # Optimize the model
-    optimizer.zero_grad()
+    o.zero_grad()
     loss.backward()
 
-    for param in policy_net.parameters():
+    for param in pn.parameters():
         if param.grad is not None:
             param.grad.data.clamp_(-1, 1)
-    optimizer.step()
+    o.step()
 
 
-for i_episode in range(MAX_TRIALS):
-    # Initialize the environment and state
-    print("=========")
-    print("Episode ", i_episode)
-    action = get_action(state)
-    state_space.print_actions(action)
-    # build a model, train and get reward and accuracy from the network manager
-    current_action = state_space.parse_state_space_list(action)
-    current_action_str = "-".join(map(str, current_action))
-    PERFORMED_ACTIONS_LIST.append(current_action_str)
-    times_action_was_played = PERFORMED_ACTIONS_LIST.count(current_action_str)
-    reward, previous_acc = manager.get_rewards(model_fn, current_action)
-    print("Reward received from network manager: ", reward, "Accuracy of CNN trained: ", previous_acc)
-    ucb_reward = 0
-    if (i_episode > 0):
-        ucb_reward = math.sqrt((2.0 * math.log(i_episode)) / times_action_was_played)
-    # Because of append to PERFORMED_ACTIONS_LIST above, division by 0 is impossible
-    updated_reward = reward + ucb_reward
-    print("Number of time action was played: ", times_action_was_played, "Updared_reward: ", updated_reward)
-    total_reward += updated_reward
-    print("Total reward: ", total_reward)
+for c in ['gaussian', 'classic']:
+    PERFORMED_ACTIONS_LIST = []
+    m = memory_gaussian
+    tn = target_net_gaussian
+    pn = policy_net_gaussian
+    total_reward = 0
+    steps_done = 0
+    previous_acc = 0.0
+    total_reward = 0.0
+    global EXPLORATION_RATE
+    EXPLORATION_RATE = 0.9
+    if c == 'classic':
+        m = memory
+        tn = target_net
+        pn = policy_net
+    for d in ['cifar10', 'cifar100']:
+        manager = construct_network_manager(d, c)
+        for i_episode in range(MAX_TRIALS):
+            logs = logs.append(pd.Series(), ignore_index=True)
+            action = get_action(state, c)
+            # build a model, train and get reward and accuracy from the network manager
+            current_action = state_space.parse_state_space_list(action)
+            current_action_str = "-".join(map(str, current_action))
+            PERFORMED_ACTIONS_LIST.append(current_action_str)
+            times_action_was_played = PERFORMED_ACTIONS_LIST.count(current_action_str)
+            reward, previous_acc = manager.get_rewards(model_fn, current_action)
+            print("Reward received from network manager: ", reward, "Accuracy of CNN trained: ", previous_acc)
+            ucb_reward = 0
+            if (i_episode > 0):
+                ucb_reward = math.sqrt((2.0 * math.log(i_episode)) / times_action_was_played)
+            # Because of append to PERFORMED_ACTIONS_LIST above, division by 0 is impossible
+            updated_reward = reward + ucb_reward
+            # print("Number of time action was played: ", times_action_was_played, "Updared_reward: ", updated_reward)
+            total_reward += reward
+            print("Total reward: ", total_reward)
 
-    # Store the transition in memory
-    memory.push(torch.FloatTensor(state), torch.FloatTensor(action), torch.FloatTensor([updated_reward]))
-    optimize_model()
+            # Saving results to a dataframe
+            logs.at[logs.index[-1], 'action'] = current_action_str
+            logs.at[logs.index[-1], 'reward'] = reward
+            logs.at[logs.index[-1], 'ucb_reward'] = ucb_reward
+            logs.at[logs.index[-1], 'total_reward'] = total_reward
+            logs.at[logs.index[-1], 'accuracy'] = previous_acc
+            logs.at[logs.index[-1], 'dataset'] = d
+            logs.at[logs.index[-1], 'controller'] = c
+            logs.at[logs.index[-1], 'iteration'] = i_episode
+            # Store the transition in memory
+            m.push(torch.FloatTensor(state), torch.FloatTensor(action), torch.FloatTensor([reward]))
+            optimize_model(c)
 
-    # Update the target network, copying all weights and biases in DQN
-    if i_episode % TARGET_UPDATE == 0:
-        target_net.load_state_dict(policy_net.state_dict())
-    # Move to the next state
-    # actions and states are equivalent, save the state and reward
-    state = action
+            if i_episode % 10 == 0:
+                if EXPLORATION_RATE > 0.1:
+                    EXPLORATION_RATE -= 0.1
+                logs.to_csv("logs.csv")
+            # Update the target network, copying all weights and biases in DQN
+            if i_episode % TARGET_UPDATE == 0:
+                tn.load_state_dict(pn.state_dict())
+            # Move to the next state
+            # actions and states are equivalent, save the state and reward
+            state = action
 
-    # if done:
-    #     episode_durations.append(t + 1)
-    #     plot_durations()
-    #     break
-
+logs.to_csv("logs.csv")
 print('Complete')
-plt.ioff()
-plt.show()
