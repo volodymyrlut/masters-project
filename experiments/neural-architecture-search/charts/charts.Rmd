@@ -14,33 +14,6 @@ library(ggplot2)
 ```
 
 ```{r}
-data_iter <- as.numeric(unlist(strsplit(as.character(data[1,]$action), '\\-')))
-```
-
-```{r}
-data_iter <- data.frame(val = data_iter)
-```
-
-```{r}
-bar_gaussian <- ggplot() + 
-  geom_bar(data = data_iter, aes(y=val, x=c("K1", "F1", "K2", "F2", "K3", "F3", "K4", "F4")), stat="identity") + ylim(0, 64) + ggtitle("Prediction of CNN for CIFAR10") + xlab("Actions")
-```
-
-```{r}
-line_gaussian <- ggplot() + 
-  geom_smooth(data = head(data, 100), aes(y=accuracy, x=c(0:99))) + xlim(0, 300) + ggtitle("Accuracy of CNN for CIFAR10") + xlab("Epoch")
-```
-
-```{r}
-library(ggpubr)
-```
-
-```{r}
-ggarrange(bar_gaussian, bar_gaussian, line_gaussian, line_gaussian, ncol = 2, nrow = 2)
-```
-
-
-```{r}
 gaussian <- data[data['controller'] == "gaussian",]
 classic <- data[data['controller'] == "classic",]
 l <- nrow(gaussian)
