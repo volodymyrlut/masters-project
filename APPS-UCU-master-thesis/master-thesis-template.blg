@@ -4,7 +4,9 @@ The top-level auxiliary file: master-thesis-template.aux
 The style file: biblatex.bst
 A level-1 auxiliary file: Chapters/Chapter1.aux
 A level-1 auxiliary file: Chapters/Chapter2.aux
-A level-1 auxiliary file: Appendices/AppendixA.aux
+A level-1 auxiliary file: Chapters/Chapter3.aux
+A level-1 auxiliary file: Chapters/Chapter4.aux
+A level-1 auxiliary file: Chapters/Chapter5.aux
 Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
 Reallocated global_strs (elt_size=20001) to 20 items from 10.
 Reallocated glb_str_end (elt_size=4) to 20 items from 10.
@@ -24,44 +26,44 @@ Database file #2: masters.bib
 Biblatex version: 3.3
 Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
-You've used 2 entries,
+You've used 6 entries,
             6256 wiz_defined-function locations,
-            1188 strings with 8804 characters,
-and the built_in function-call counts, 6211 in all, are:
-= -- 355
-> -- 161
-< -- 27
-+ -- 148
-- -- 69
-* -- 432
-:= -- 747
+            1229 strings with 10112 characters,
+and the built_in function-call counts, 36251 in all, are:
+= -- 2526
+> -- 677
+< -- 170
++ -- 1003
+- -- 270
+* -- 2823
+:= -- 3971
 add.period$ -- 0
-call.type$ -- 2
-change.case$ -- 11
-chr.to.int$ -- 30
-cite$ -- 2
-duplicate$ -- 562
-empty$ -- 575
-format.name$ -- 67
-if$ -- 1311
+call.type$ -- 6
+change.case$ -- 84
+chr.to.int$ -- 35
+cite$ -- 10
+duplicate$ -- 3970
+empty$ -- 3231
+format.name$ -- 420
+if$ -- 7281
 int.to.chr$ -- 0
-int.to.str$ -- 2
+int.to.str$ -- 13
 missing$ -- 0
-newline$ -- 55
-num.names$ -- 41
-pop$ -- 372
+newline$ -- 251
+num.names$ -- 242
+pop$ -- 1826
 preamble$ -- 1
-purify$ -- 16
+purify$ -- 124
 quote$ -- 0
-skip$ -- 237
+skip$ -- 995
 stack$ -- 0
-substring$ -- 575
-swap$ -- 157
-text.length$ -- 41
-text.prefix$ -- 1
+substring$ -- 4215
+swap$ -- 980
+text.length$ -- 163
+text.prefix$ -- 5
 top$ -- 1
-type$ -- 56
+type$ -- 192
 warning$ -- 0
-while$ -- 103
+while$ -- 520
 width$ -- 0
-write$ -- 54
+write$ -- 246
