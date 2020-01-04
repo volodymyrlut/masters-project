@@ -235,6 +235,35 @@
     \warn{\item Invalid format of field 'month'}
   \endentry
 
+  \entry{Thomas15a}{article}{}
+    \name{author}{1}{}{%
+      {{hash=TPS}{%
+         family={Thomas},
+         familyi={T\bibinitperiod},
+         given={Philip\bibnamedelima S.},
+         giveni={P\bibinitperiod\bibinitdelim S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{TPS1}
+    \strng{fullhash}{TPS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2015}
+    \field{sortinit}{T}
+    \field{sortinithash}{T}
+    \verb{eprint}
+    \verb 1512.09075
+    \endverb
+    \field{title}{A Notation for Markov Decision Processes}
+    \verb{url}
+    \verb http://arxiv.org/abs/1512.09075
+    \endverb
+    \field{volume}{abs/1512.09075}
+    \field{journaltitle}{CoRR}
+    \field{eprinttype}{arXiv}
+    \field{year}{2015}
+  \endentry
+
   \entry{pmlr-v97-ying19a}{inproceedings}{}
     \name{author}{6}{}{%
       {{hash=YC}{%

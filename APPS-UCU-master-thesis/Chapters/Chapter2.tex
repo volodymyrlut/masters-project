@@ -26,6 +26,18 @@ RL is an machine learning paradigm often used when the exact mathematical model 
 
 MDB is a generalization of mathematical framework which allows performing a sequence of actions in an environment where future states would depend on current states and yield a partly random outcomes.
 
+In other words, Markov Decision Process is a description of set of actions agents should take to receive some reward. It is described by:
+\begin{itemize}
+  \item State (or states) $\sset$ that are fully observable by agent
+  \item Set of actions $\aset$ which agent could take in given state
+  \item Transition model $\Tdef$ - an effect in state accused by action taken by agent
+  \item A reward function $\Rfun$ which defines a reward received by agent for taking this action
+  \item A discount factor $\Ddef$ which is used to value a reward that could be received in future
+  \item A policy $\pdef$ agent should learn
+\end{itemize}
+
+A policy which allows agent to maximize it's reward is called a solution of given MDP. Notation of MDP used above is taken from \cite{Thomas15a}.
+
 \subsection{Q Learning}
 \subsection{Exploration and Exploitation problem}
 \subsection{Epsilon-greedy approach}
