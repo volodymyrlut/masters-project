@@ -5,5 +5,19 @@
 \subsection{Reward function}
 \subsection{Exploration and exploitation}
 \subsection{Gaussian layer}
+When it comes to probabilistic approach to RL algorithms, scoring becomes very important and may have a big impact on action taken by the controller - \cite[see][]{tilmann}
+
+If master CNN in RL agent is solving a regression problem (which is exactly our case) this CNN would use backpropagation to update it's weights (as noted above) in a way that error metrics of a test set would be minimized. Originally outputs of the last layer would be simple values - in our case, values which determines the actions that would be taken by controller.
+
+Those values obviously depends on input and weights. In order to receive a Gaussian distribution we would need to modify last layer so that it would return mean and variance of output variable, which is enough to describe a Gaussian distribution of this variable. This allows us to bring a prediction uncertainity into the outputs of CNN. As described in \cite{2017arXiv170404110S} this requires also another approach to computation of loss function.
+
+Generally saying we are using Gaussian distribution instead of single values because we need to have a measure of uncertainity of prediction of output. Then, if we have quite big uncertainity, it would be smarter to explore a random action. Otherwise, agent should use predicted action.
+
+
+
+
+
+
+
 \section{Master CNN}
 \section{Slave CNN}

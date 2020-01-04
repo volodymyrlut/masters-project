@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2018.1.10)  3 JAN 2020 04:06
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2018.1.10)  3 JAN 2020 22:59
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2051,15 +2051,15 @@ LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <17.28> not available
 Chapter 2.
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <14.4> not available
 (Font)              Font shape `T1/ppl/b/n' tried instead on input line 3.
-LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <12> not available
-(Font)              Font shape `T1/ppl/b/n' tried instead on input line 23.
-)
 1: section
 [2
 
 
 
-] [3]
+]
+LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <12> not available
+(Font)              Font shape `T1/ppl/b/n' tried instead on input line 25.
+) [3]
 \openout2 = `Chapters/Chapter3.aux'.
 
  (./Chapters/Chapter3.tex
@@ -2129,10 +2129,10 @@ Package logreq Info: Writing requests to 'master-thesis-template.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 33926 strings out of 492995
- 688138 string characters out of 6132704
+ 33943 strings out of 492995
+ 688609 string characters out of 6132704
  898134 words of memory out of 5000000
- 37049 multiletter control sequences out of 15000+600000
+ 37065 multiletter control sequences out of 15000+600000
  579804 words of font info for 104 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  52i,19n,75p,10395b,1819s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -2146,10 +2146,10 @@ e/2017/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></usr/local/texlive/20
 dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2017/texmf-dist/fo
 nts/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/typ
 e1/urw/palatino/uplri8a.pfb>
-Output written on master-thesis-template.pdf (19 pages, 306238 bytes).
+Output written on master-thesis-template.pdf (19 pages, 310568 bytes).
 PDF statistics:
- 322 PDF objects out of 1000 (max. 8388607)
- 289 compressed objects within 3 object streams
- 65 named destinations out of 1000 (max. 500000)
+ 331 PDF objects out of 1000 (max. 8388607)
+ 298 compressed objects within 3 object streams
+ 66 named destinations out of 1000 (max. 500000)
  246 words of extra memory for PDF output out of 10000 (max. 10000000)
 

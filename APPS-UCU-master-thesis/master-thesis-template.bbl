@@ -58,6 +58,79 @@
     \field{year}{2016}
   \endentry
 
+  \entry{tilmann}{article}{}
+    \name{author}{3}{}{%
+      {{hash=GT}{%
+         family={Gneiting},
+         familyi={G\bibinitperiod},
+         given={Tilmann},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=BF}{%
+         family={Balabdaoui},
+         familyi={B\bibinitperiod},
+         given={Fadoua},
+         giveni={F\bibinitperiod},
+      }}%
+      {{hash=RAE}{%
+         family={Raftery},
+         familyi={R\bibinitperiod},
+         given={Adrian\bibnamedelima E.},
+         giveni={A\bibinitperiod\bibinitdelim E\bibinitperiod},
+      }}%
+    }
+    \keyw{Cross-validation, Density forecast, Ensemble prediction system, Ex
+  post evaluation, Forecast verification, Model diagnostics, Posterior
+  predictive assessment, Predictive distribution, Prequential principle,
+  Probability integral transform, Proper scoring rule}
+    \strng{namehash}{GTBFRAE1}
+    \strng{fullhash}{GTBFRAE1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2007}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{abstract}{%
+    Summary.â Probabilistic forecasts of continuous variables take the
+  form of predictive densities or predictive cumulative distribution functions.
+  We propose a diagnostic approach to the evaluation of predictive performance
+  that is based on the paradigm of maximizing the sharpness of the predictive
+  distributions subject to calibration. Calibration refers to the statistical
+  consistency between the distributional forecasts and the observations and is
+  a joint property of the predictions and the events that materialize.
+  Sharpness refers to the concentration of the predictive distributions and is
+  a property of the forecasts only. A simple theoretical framework allows us to
+  distinguish between probabilistic calibration, exceedance calibration and
+  marginal calibration. We propose and study tools for checking calibration and
+  sharpness, among them the probability integral transform histogram, marginal
+  calibration plots, the sharpness diagram and proper scoring rules. The
+  diagnostic approach is illustrated by an assessment and ranking of
+  probabilistic forecasts of wind speed at the Stateline wind energy centre in
+  the US Pacific Northwest. In combination with cross-validation or in the time
+  series context, our proposal provides very general, nonparametric
+  alternatives to the use of information criteria for model diagnostics and
+  model selection.%
+    }
+    \verb{doi}
+    \verb 10.1111/j.1467-9868.2007.00587.x
+    \endverb
+    \verb{eprint}
+    \verb https://rss.onlinelibrary.wiley.com/doi/pdf/10.1111/j.1467-9868.2007.
+    \verb 00587.x
+    \endverb
+    \field{number}{2}
+    \field{pages}{243\bibrangedash 268}
+    \field{title}{Probabilistic forecasts, calibration and sharpness}
+    \verb{url}
+    \verb https://rss.onlinelibrary.wiley.com/doi/abs/10.1111/j.1467-9868.2007.
+    \verb 00587.x
+    \endverb
+    \field{volume}{69}
+    \field{journaltitle}{Journal of the Royal Statistical Society: Series B
+  (Statistical Methodology)}
+    \field{year}{2007}
+  \endentry
+
   \entry{2017arXiv170404110S}{article}{}
     \name{author}{3}{}{%
       {{hash=SD}{%
