@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2018.1.10)  4 JAN 2020 17:30
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2018.1.10)  4 JAN 2020 17:46
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2081,7 +2081,7 @@ Chapter 3.
 
  (./Chapters/Chapter4.tex
 Chapter 4.
-<images/cifar10example.png, id=268, 483.8075pt x 371.3875pt>
+<images/cifar10example.png, id=269, 483.8075pt x 371.3875pt>
 File: images/cifar10example.png Graphic file (type png)
 <use images/cifar10example.png>
 Package pdftex.def Info: images/cifar10example.png  used on input line 33.
@@ -2157,10 +2157,10 @@ e/2017/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></usr/local/texlive/20
 dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2017/texmf-dist/fo
 nts/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/typ
 e1/urw/palatino/uplri8a.pfb>
-Output written on master-thesis-template.pdf (20 pages, 616555 bytes).
+Output written on master-thesis-template.pdf (20 pages, 616757 bytes).
 PDF statistics:
- 352 PDF objects out of 1000 (max. 8388607)
- 314 compressed objects within 4 object streams
+ 353 PDF objects out of 1000 (max. 8388607)
+ 315 compressed objects within 4 object streams
  70 named destinations out of 1000 (max. 500000)
  251 words of extra memory for PDF output out of 10000 (max. 10000000)
 

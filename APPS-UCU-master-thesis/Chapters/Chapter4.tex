@@ -27,10 +27,16 @@ Key differences between CIFAR10 and CIFAR100 is denoted in table \ref{table:1}.
 \label{table:1}
 \end{table}
 
-Both in CIFAR10 classes are exclusive and do not assume instances overlapping - see \ref{fig:cifar10}.
+Both in CIFAR10 classes are exclusive and do not assume instances overlapping - see \ref{fig:cifar10}. 
 
+\begin{figure}[!htb]
+  \includegraphics[width=\linewidth]{images/cifar10example.png}
+  \caption{Classes of CIFAR10 including 10 random images from each \cite{CIFAR}}
+  \label{fig:cifar10}
+\end{figure}
+Figure \ref{fig:cifar10} shows a boat.
 
-
+We use CIFAR datasets as is, meaning that we also share same train/test dataset split for evaluating generated CNN architectures. There are 50000 training images and 10000 test images in the dataset.
 
 \section{Metrics}
 \section{Environment and training}
