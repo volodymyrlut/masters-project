@@ -1,9 +1,0 @@
-\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
-\babel@toc {english}{}
-\contentsline {chapter}{Declaration of Authorship}{iii}{section*.1}
-\contentsline {chapter}{Abstract}{vi}{section*.2}
-\contentsline {chapter}{Acknowledgements}{vii}{section*.3}
-\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.14}
-\contentsline {section}{\numberline {1.1}History}{1}{section.15}
-\contentsline {chapter}{\numberline {A}Code}{2}{appendix.16}
-\contentsline {section}{\numberline {A.1}Pseudocode}{2}{section.17}

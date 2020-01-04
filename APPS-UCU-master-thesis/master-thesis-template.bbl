@@ -131,6 +131,28 @@
     \field{year}{2007}
   \endentry
 
+  \entry{CIFAR}{article}{}
+    \name{author}{1}{}{%
+      {{hash=KA}{%
+         family={Krizhevsky},
+         familyi={K\bibinitperiod},
+         given={Alex},
+         giveni={A\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{KA1}
+    \strng{fullhash}{KA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2012}
+    \field{sortinit}{K}
+    \field{sortinithash}{K}
+    \field{title}{Learning Multiple Layers of Features from Tiny Images}
+    \field{journaltitle}{University of Toronto}
+    \field{month}{05}
+    \field{year}{2012}
+  \endentry
+
   \entry{2017arXiv170404110S}{article}{}
     \name{author}{3}{}{%
       {{hash=SD}{%
