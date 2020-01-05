@@ -8,25 +8,25 @@
 \contentsline {section}{\numberline {2.1}History}{2}{section.16}
 \contentsline {section}{\numberline {2.2}Reinforcement Learning}{3}{section.17}
 \contentsline {subsection}{\numberline {2.2.1}Markov Decision Process}{3}{subsection.18}
-\contentsline {subsection}{\numberline {2.2.2}Q Learning}{3}{subsection.19}
-\contentsline {subsection}{\numberline {2.2.3}Exploration and Exploitation problem}{3}{subsection.20}
-\contentsline {subsection}{\numberline {2.2.4}Epsilon-greedy approach}{3}{subsection.21}
-\contentsline {subsection}{\numberline {2.2.5}Upper-confidence bound}{3}{subsection.22}
-\contentsline {section}{\numberline {2.3}Image classification problem}{3}{section.23}
-\contentsline {section}{\numberline {2.4}Convolutional Neural Networks}{3}{section.24}
-\contentsline {section}{\numberline {2.5}Gaussian Distribution}{3}{section.25}
-\contentsline {chapter}{\numberline {3}Proposed approach}{4}{chapter.26}
-\contentsline {section}{\numberline {3.1}Pipeline}{4}{section.27}
-\contentsline {section}{\numberline {3.2}RL agent}{4}{section.28}
-\contentsline {subsection}{\numberline {3.2.1}Reward function}{4}{subsection.29}
-\contentsline {subsection}{\numberline {3.2.2}Exploration and exploitation}{4}{subsection.30}
-\contentsline {subsection}{\numberline {3.2.3}Gaussian layer}{4}{subsection.31}
-\contentsline {section}{\numberline {3.3}Master CNN}{4}{section.32}
-\contentsline {section}{\numberline {3.4}Slave CNN}{4}{section.33}
-\contentsline {chapter}{\numberline {4}Experiments}{5}{chapter.34}
-\contentsline {section}{\numberline {4.1}Datasets}{5}{section.35}
-\contentsline {section}{\numberline {4.2}Metrics}{5}{section.38}
-\contentsline {section}{\numberline {4.3}Environment and training}{5}{section.39}
-\contentsline {section}{\numberline {4.4}Results}{5}{section.40}
-\contentsline {chapter}{\numberline {5}Conclusion}{7}{chapter.41}
-\contentsline {chapter}{Bibliography}{8}{appendix*.42}
+\contentsline {subsection}{\numberline {2.2.2}Exploration and exploitation dilemma}{3}{subsection.19}
+\contentsline {subsection}{\numberline {2.2.3}Epsilon-greedy approach}{4}{subsection.20}
+\contentsline {subsection}{\numberline {2.2.4}Upper-confidence bound}{4}{subsection.21}
+\contentsline {subsection}{\numberline {2.2.5}Deep Q Learning}{4}{subsection.22}
+\contentsline {section}{\numberline {2.3}Image classification problem}{5}{section.23}
+\contentsline {section}{\numberline {2.4}Convolutional Neural Networks}{5}{section.24}
+\contentsline {section}{\numberline {2.5}Gaussian Distribution}{5}{section.25}
+\contentsline {chapter}{\numberline {3}Proposed approach}{6}{chapter.26}
+\contentsline {section}{\numberline {3.1}Pipeline}{6}{section.27}
+\contentsline {section}{\numberline {3.2}RL agent}{6}{section.28}
+\contentsline {subsection}{\numberline {3.2.1}Reward function}{6}{subsection.29}
+\contentsline {subsection}{\numberline {3.2.2}Exploration and exploitation}{6}{subsection.30}
+\contentsline {subsection}{\numberline {3.2.3}Gaussian layer}{6}{subsection.31}
+\contentsline {section}{\numberline {3.3}Master CNN}{6}{section.32}
+\contentsline {section}{\numberline {3.4}Slave CNN}{6}{section.33}
+\contentsline {chapter}{\numberline {4}Experiments}{7}{chapter.34}
+\contentsline {section}{\numberline {4.1}Datasets}{7}{section.35}
+\contentsline {section}{\numberline {4.2}Metrics}{7}{section.38}
+\contentsline {section}{\numberline {4.3}Environment and training}{7}{section.39}
+\contentsline {section}{\numberline {4.4}Results}{7}{section.40}
+\contentsline {chapter}{\numberline {5}Conclusion}{9}{chapter.41}
+\contentsline {chapter}{Bibliography}{10}{appendix*.42}

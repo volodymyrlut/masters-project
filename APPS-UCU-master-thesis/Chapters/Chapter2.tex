@@ -37,12 +37,53 @@ In other words, Markov Decision Process is a description of set of actions agent
 \end{itemize}
 
 A policy which allows agent to maximize it's reward is called a solution of given MDP. Notation of MDP used above is taken from \cite{Thomas15a}.
+\subsection{Exploration and exploitation dilemma}
+To demonstrate exploration over exploitation problem we usually often refer to Multiarmed Bandit Problem.
 
-\subsection{Q Learning}
-\subsection{Exploration and Exploitation problem}
+Multiarmed bandit problem is MDP with stochastic reward. Imagine having N machines with reward probabilities $Q_1 .. Q_n$. Playing k-th bandit could result into reward of 1 with a possibility of $Q_k$ or into reward 0 with possibility of $1 - Q_k$. Real reward probabilities are unknown to the agent. Also, resources are limited, so, exploring them using law of large numbers is inefficient and impossible in terms of this problem.
+
+The goal of agent playing multiarmed bandits is maximization of cummulative reward.
+
+Simply saying, by playing known action (performing exploitation) agent may miss better option. This becomes a loss function of such algorithms - a regret player might by not selecting the optimal action. If the agent always plays random actions (exploration) it will be completely useless and would yield no good results.
+In other words, to balance exploration and exploitation problem we would need to ensure that the agent is not overfitting to known actions but still uses gained knowledge. It often happens, that RL agents observes some \textbf{good} \textbf{enough} action and starts to use it constantly. This is obviously not the way we generally want an RL algorithm to behave.
 \subsection{Epsilon-greedy approach}
+Epsilon-greedy approach to solve exploration over exploitation dilemma is based on the idea, where agent would generally take best actions, but at some time iterations t it would explore a random actions. It often assumes that at the beginning of the training number of random actions would be bigger (to ensure that agent would be able to explore good actions at the very beginning) and later it would decay (to ensure that agent is actually playing best actions). Expected reward is often represented as a mean of previously received rewards when playing this action. 
+
 \subsection{Upper-confidence bound}
+
+UCB is another instrument to solve exploration over exploitation dilemma. General approach is similar to epsilon-greedy algorithm, however, UCB allows to use unexplored actions in favor of actions which algorithm is very certain about being bad ones.
+
+UCB measures potential of action using upper confidence bound of the reward value in such a way that larger number of trials of certain action should give smaller bound. This also prevents algorithm from overfitting.
+
+In this work we would refer to Theorem 1 from \cite{Auer2002} using a simple UCB approach which allows to receive logarithmic regret uniformly and without any preliminary knowledge about the reward distributions.
+
+\[
+U(a) = Q(a) + \sqrt{\frac{2 log n_a}{N}}
+\]
+
+Where Q(a) is expected reward from action a (generally a mean of rewards received by playing that action), $n_a$ is number of times this action was played and N is total number of plays.
+\subsection{Deep Q Learning}
+While Q learning is a algorithm which allows agent to learn an effective policy for maximizing cumulative reward in general MDP, deep Q learning is a same, model-free approach that uses Deep Neural Network to approximate the values of expected reward.
+
+In recent years a lot of research is done in this field, even though Deep Q learning is treated as unstable solution because a slight change in input can change outputs significantly.
+
+However, this approach has a proven success story. This work is inspired by \cite{MnihKSGAWR13} which was one of the first successful aprroaches to use deep neural network as a backend for reinforcement learning agent.
+
+In general Deep Q learning algorithms stores experienced rewards in replay memory, from where they are later batched and used as input to the underlying neural network. That's usually the reason why a lot of research uses RNNs with LSTM (Long-Short Term Memory) cells as a backend.
+
+This work uses a convolutional neural network as a backend for RL algorithm.
 \section{Image classification problem}
+
+Image classification problem is a machine learning problem aiming to recognize a visual concept of given image and assign some class (label) to it as an output.
+
+Data-driven approach for this problem required to train algorithm on loads of images in order to understand which features images from one class have in common to other images of this class and different from images of other classes.
+
+Naturally, at the beginning KNN (K Nearest Neighbors) and other simple clusterization algorithms were used.
+
+However, the real move forward started when backpropagation techiques were applied to neural network architectures, which opened a way for a deep learning techiques. As Yann LeCun released LeNet-5  (see \cite{lecun-89c}) modern convolutional architectures started to develop rapidly.
+
+There are several popular datasets such as MNIST, Flowers, ImageNet etc. which are constantly used in image classification contests. Modern deep neural networks outperform human-level accuracy on those datasets.
+
 \section{Convolutional Neural Networks}
 \section{Gaussian Distribution}
 

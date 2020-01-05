@@ -17,6 +17,65 @@
 \endgroup
 
 \sortlist[entry]{nyt/global/}
+  \entry{Auer2002}{article}{}
+    \name{author}{3}{}{%
+      {{hash=AP}{%
+         family={Auer},
+         familyi={A\bibinitperiod},
+         given={Peter},
+         giveni={P\bibinitperiod},
+      }}%
+      {{hash=CBN}{%
+         family={Cesa-Bianchi},
+         familyi={C\bibinitperiod-B\bibinitperiod},
+         given={Nicol{\`o}},
+         giveni={N\bibinitperiod},
+      }}%
+      {{hash=FP}{%
+         family={Fischer},
+         familyi={F\bibinitperiod},
+         given={Paul},
+         giveni={P\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{APCBNFP1}
+    \strng{fullhash}{APCBNFP1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2002}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{abstract}{%
+    Reinforcement learning policies face the exploration versus exploitation
+  dilemma, i.e. the search for a balance between exploring the environment to
+  find profitable actions while taking the empirically best action as often as
+  possible. A popular measure of a policy's success in addressing this dilemma
+  is the regret, that is the loss due to the fact that the globally optimal
+  policy is not followed all the times. One of the simplest examples of the
+  exploration/exploitation dilemma is the multi-armed bandit problem. Lai and
+  Robbins were the first ones to show that the regret for this problem has to
+  grow at least logarithmically in the number of plays. Since then, policies
+  which asymptotically achieve this regret have been devised by Lai and Robbins
+  and many others. In this work we show that the optimal logarithmic regret is
+  also achievable uniformly over time, with simple and efficient policies, and
+  for all reward distributions with bounded support.%
+    }
+    \verb{doi}
+    \verb 10.1023/A:1013689704352
+    \endverb
+    \field{issn}{1573-0565}
+    \field{number}{2}
+    \field{pages}{235\bibrangedash 256}
+    \field{title}{Finite-time Analysis of the Multiarmed Bandit Problem}
+    \verb{url}
+    \verb https://doi.org/10.1023/A:1013689704352
+    \endverb
+    \field{volume}{47}
+    \field{journaltitle}{Machine Learning}
+    \field{year}{2002}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
   \entry{Baker2016DesigningNN}{article}{}
     \name{author}{4}{}{%
       {{hash=BB}{%
@@ -151,6 +210,144 @@
     \field{journaltitle}{University of Toronto}
     \field{month}{05}
     \field{year}{2012}
+  \endentry
+
+  \entry{lecun-89c}{article}{}
+    \name{author}{9}{}{%
+      {{hash=LY}{%
+         family={LeCun},
+         familyi={L\bibinitperiod},
+         given={Y.},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=JLD}{%
+         family={Jackel},
+         familyi={J\bibinitperiod},
+         given={L.\bibnamedelima D.},
+         giveni={L\bibinitperiod\bibinitdelim D\bibinitperiod},
+      }}%
+      {{hash=BB}{%
+         family={Boser},
+         familyi={B\bibinitperiod},
+         given={B.},
+         giveni={B\bibinitperiod},
+      }}%
+      {{hash=DJS}{%
+         family={Denker},
+         familyi={D\bibinitperiod},
+         given={J.\bibnamedelima S.},
+         giveni={J\bibinitperiod\bibinitdelim S\bibinitperiod},
+      }}%
+      {{hash=GHP}{%
+         family={Graf},
+         familyi={G\bibinitperiod},
+         given={H.\bibnamedelima P.},
+         giveni={H\bibinitperiod\bibinitdelim P\bibinitperiod},
+      }}%
+      {{hash=GI}{%
+         family={Guyon},
+         familyi={G\bibinitperiod},
+         given={I.},
+         giveni={I\bibinitperiod},
+      }}%
+      {{hash=HD}{%
+         family={Henderson},
+         familyi={H\bibinitperiod},
+         given={D.},
+         giveni={D\bibinitperiod},
+      }}%
+      {{hash=HRE}{%
+         family={Howard},
+         familyi={H\bibinitperiod},
+         given={R.\bibnamedelima E.},
+         giveni={R\bibinitperiod\bibinitdelim E\bibinitperiod},
+      }}%
+      {{hash=HW}{%
+         family={Hubbard},
+         familyi={H\bibinitperiod},
+         given={W.},
+         giveni={W\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{LY+1}
+    \strng{fullhash}{LYJLDBBDJSGHPGIHDHREHW1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1989}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \field{note}{invited paper}
+    \field{pages}{41\bibrangedash 46}
+    \field{title}{Handwritten Digit Recognition: Applications of Neural Net
+  Chips and Automatic Learning}
+    \field{journaltitle}{IEEE Communication}
+    \field{year}{1989}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{MnihKSGAWR13}{article}{}
+    \name{author}{7}{}{%
+      {{hash=MV}{%
+         family={Mnih},
+         familyi={M\bibinitperiod},
+         given={Volodymyr},
+         giveni={V\bibinitperiod},
+      }}%
+      {{hash=KK}{%
+         family={Kavukcuoglu},
+         familyi={K\bibinitperiod},
+         given={Koray},
+         giveni={K\bibinitperiod},
+      }}%
+      {{hash=SD}{%
+         family={Silver},
+         familyi={S\bibinitperiod},
+         given={David},
+         giveni={D\bibinitperiod},
+      }}%
+      {{hash=GA}{%
+         family={Graves},
+         familyi={G\bibinitperiod},
+         given={Alex},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=AI}{%
+         family={Antonoglou},
+         familyi={A\bibinitperiod},
+         given={Ioannis},
+         giveni={I\bibinitperiod},
+      }}%
+      {{hash=WD}{%
+         family={Wierstra},
+         familyi={W\bibinitperiod},
+         given={Daan},
+         giveni={D\bibinitperiod},
+      }}%
+      {{hash=RMA}{%
+         family={Riedmiller},
+         familyi={R\bibinitperiod},
+         given={Martin\bibnamedelima A.},
+         giveni={M\bibinitperiod\bibinitdelim A\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{MV+1}
+    \strng{fullhash}{MVKKSDGAAIWDRMA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2013}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \verb{eprint}
+    \verb 1312.5602
+    \endverb
+    \field{title}{Playing Atari with Deep Reinforcement Learning}
+    \verb{url}
+    \verb http://arxiv.org/abs/1312.5602
+    \endverb
+    \field{volume}{abs/1312.5602}
+    \field{journaltitle}{CoRR}
+    \field{eprinttype}{arXiv}
+    \field{year}{2013}
   \endentry
 
   \entry{2017arXiv170404110S}{article}{}
