@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2018.1.10)  5 JAN 2020 05:01
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2018.1.10)  8 JAN 2020 21:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2066,7 +2066,7 @@ File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
 1: section
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <20.74> not available
 (Font)              Font shape `T1/ppl/b/n' tried instead on input line 85.
-<UCU-Apps.png, id=127, 845.0772pt x 597.432pt>
+<UCU-Apps.png, id=119, 845.0772pt x 597.432pt>
 File: UCU-Apps.png Graphic file (type png)
 <use UCU-Apps.png>
 Package pdftex.def Info: UCU-Apps.png  used on input line 108.
@@ -2128,7 +2128,7 @@ LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <24.88> not available
 [6
 
 ] (./master-thesis-template.lof
-Overfull \hbox (6.95392pt too wide) in paragraph at lines 7--7
+Overfull \hbox (6.95392pt too wide) in paragraph at lines 12--12
  [][] [][][]\T1/ppl/m/n/10.95 Classes of CI-FAR10 in-clud-ing 10 ran-dom im-age
 s from each Krizhevsky, 
  []
@@ -2154,19 +2154,11 @@ s from each Krizhevsky,
 [9
 
 ]
-1: section
-[10
-
-]
-1: section
-[11
-
-]
 --------------------
  Dedicatory
 --------------------
 1: section
-[12
+[10
 
 ]
 1: section
@@ -2189,111 +2181,186 @@ LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <17.28> not available
 Chapter 2.
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <14.4> not available
 (Font)              Font shape `T1/ppl/b/n' tried instead on input line 3.
+
+LaTeX Warning: No positions in optional float specifier.
+               Default added (so using `tbp') on input line 13.
+
+<images/efficientnet.png, id=256, 642.4pt x 132.495pt>
+File: images/efficientnet.png Graphic file (type png)
+<use images/efficientnet.png>
+Package pdftex.def Info: images/efficientnet.png  used on input line 14.
+(pdftex.def)             Requested size: 404.02908pt x 83.33278pt.
+
+LaTeX Warning: No positions in optional float specifier.
+               Default added (so using `tbp') on input line 21.
+
+<images/deepAr.png, id=260, 501.875pt x 358.33875pt>
+File: images/deepAr.png Graphic file (type png)
+<use images/deepAr.png>
+Package pdftex.def Info: images/deepAr.png  used on input line 22.
+(pdftex.def)             Requested size: 404.02908pt x 288.49216pt.
 1: section
 [2
 
 
 
-]
+ <./images/efficientnet.png>]
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <12> not available
-(Font)              Font shape `T1/ppl/b/n' tried instead on input line 25.
- [3] [4]) [5]
+(Font)              Font shape `T1/ppl/b/n' tried instead on input line 37.
+ [3 <./images/deepAr.png>] [4] [5]
+<images/lenetoriginal.jpg, id=298, 660.21657pt x 197.98969pt>
+File: images/lenetoriginal.jpg Graphic file (type jpg)
+<use images/lenetoriginal.jpg>
+Package pdftex.def Info: images/lenetoriginal.jpg  used on input line 109.
+(pdftex.def)             Requested size: 404.02908pt x 121.16626pt.
+ [6 <./images/lenetoriginal.jpg>]) [7]
 \openout2 = `Chapters/Chapter3.aux'.
 
  (./Chapters/Chapter3.tex
 Chapter 3.
-)
 1: section
-[6
+[8
 
 
 
 ]
+<images/dqn.png, id=330, 622.325pt x 346.29375pt>
+File: images/dqn.png Graphic file (type png)
+<use images/dqn.png>
+Package pdftex.def Info: images/dqn.png  used on input line 36.
+(pdftex.def)             Requested size: 404.02908pt x 224.82405pt.
+ [9 <./images/dqn.png>]
+LaTeX Font Info:    Try loading font information for T1+cmtt on input line 79.
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/base/t1cmtt.fd
+File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+<images/slave-example.png, id=340, 707.64375pt x 481.8pt>
+File: images/slave-example.png Graphic file (type png)
+<use images/slave-example.png>
+Package pdftex.def Info: images/slave-example.png  used on input line 90.
+(pdftex.def)             Requested size: 404.02908pt x 275.08464pt.
+) [10] [11 <./images/slave-example.png>]
 \openout2 = `Chapters/Chapter4.aux'.
 
  (./Chapters/Chapter4.tex
 Chapter 4.
-<images/cifar10example.png, id=286, 483.8075pt x 371.3875pt>
+<images/cifar10example.png, id=355, 483.8075pt x 371.3875pt>
 File: images/cifar10example.png Graphic file (type png)
 <use images/cifar10example.png>
 Package pdftex.def Info: images/cifar10example.png  used on input line 33.
 (pdftex.def)             Requested size: 404.02908pt x 310.16129pt.
-)
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
 1: section
-[7
+[12
 
 
 
-] [8 <./images/cifar10example.png>]
+] [13 <./images/cifar10example.png>]
+<images/epsilon_greedy.png, id=373, 2195.20125pt x 1356.06625pt>
+File: images/epsilon_greedy.png Graphic file (type png)
+<use images/epsilon_greedy.png>
+Package pdftex.def Info: images/epsilon_greedy.png  used on input line 91.
+(pdftex.def)             Requested size: 404.02908pt x 249.58543pt.
+<images/ucb.png, id=374, 2195.20125pt x 1356.06625pt>
+File: images/ucb.png Graphic file (type png)
+<use images/ucb.png>
+Package pdftex.def Info: images/ucb.png  used on input line 97.
+(pdftex.def)             Requested size: 404.02908pt x 249.58543pt.
+ [14 <./images/epsilon_greedy.png> <./images/ucb.png>]
+<images/total_reward_epsilon_greedy.png, id=382, 2195.20125pt x 1356.06625pt>
+File: images/total_reward_epsilon_greedy.png Graphic file (type png)
+<use images/total_reward_epsilon_greedy.png>
+Package pdftex.def Info: images/total_reward_epsilon_greedy.png  used on input 
+line 112.
+(pdftex.def)             Requested size: 404.02908pt x 249.58543pt.
+<images/action_unique.png, id=384, 2195.20125pt x 1356.06625pt>
+File: images/action_unique.png Graphic file (type png)
+<use images/action_unique.png>
+Package pdftex.def Info: images/action_unique.png  used on input line 122.
+(pdftex.def)             Requested size: 404.02908pt x 249.58543pt.
+<images/musigma.png, id=386, 2195.20125pt x 1356.06625pt>
+File: images/musigma.png Graphic file (type png)
+<use images/musigma.png>
+Package pdftex.def Info: images/musigma.png  used on input line 130.
+(pdftex.def)             Requested size: 404.02908pt x 249.58543pt.
+
+Overfull \hbox (15.41385pt too wide) in paragraph at lines 139--152
+ [][] 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[15 <./images/total_reward_epsilon_greedy.png>]) [16 <./images/action_unique.pn
+g> <./images/musigma.png>] [17]
 \openout2 = `Chapters/Chapter5.aux'.
 
  (./Chapters/Chapter5.tex
 Chapter 5.
 )
 1: section
-[9
+[18
 
 
 
 ]
-LaTeX Font Info:    Try loading font information for T1+cmtt on input line 277.
-
- (/usr/local/texlive/2017/texmf-dist/tex/latex/base/t1cmtt.fd
-File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
-)
-Overfull \hbox (44.61305pt too wide) in paragraph at lines 277--277
+Overfull \hbox (44.61305pt too wide) in paragraph at lines 249--249
 \T1/ppl/m/n/10.95 Fore-cast-ing with Au-tore-gres-sive Re-cur-rent Net-works^^Q
 . In: \T1/ppl/m/it/10.95 arXiv e-prints\T1/ppl/m/n/10.95 , arXiv:1704.04110,
  []
 
+1: section
+[19
 
-Overfull \hbox (31.30063pt too wide) in paragraph at lines 277--277
+
+]
+Overfull \hbox (31.30063pt too wide) in paragraph at lines 249--249
 \T1/ppl/m/n/10.95 Con-vo-lu-tional Neu-ral Net-works^^Q. In: \T1/ppl/m/it/10.95
  arXiv e-prints\T1/ppl/m/n/10.95 , arXiv:1905.11946, arXiv:1905.11946.
  []
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 281.
-1: section
-[10
-
-
-]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 281.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 253.
+[20]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 253.
  (./master-thesis-template.aux (./Chapters/Chapter1.aux)
 (./Chapters/Chapter2.aux) (./Chapters/Chapter3.aux) (./Chapters/Chapter4.aux)
 (./Chapters/Chapter5.aux))
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 281.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 281.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 253.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 253.
 Package rerunfilecheck Info: File `master-thesis-template.out' has not changed.
 
-(rerunfilecheck)             Checksum: FA7A5BAD2C43FBF711FBA0874FEE8C0E;4131.
+(rerunfilecheck)             Checksum: 74F46EF368D329AB6F279514F5E41F5D;3954.
 Package logreq Info: Writing requests to 'master-thesis-template.run.xml'.
 \openout1 = `master-thesis-template.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 35539 strings out of 492995
- 710771 string characters out of 6132704
- 924614 words of memory out of 5000000
- 38586 multiletter control sequences out of 15000+600000
- 591159 words of font info for 138 fonts, out of 8000000 for 9000
+ 35677 strings out of 492995
+ 713893 string characters out of 6132704
+ 936367 words of memory out of 5000000
+ 38683 multiletter control sequences out of 15000+600000
+ 587952 words of font info for 129 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 56i,19n,82p,10395b,2462s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 57i,20n,82p,10395b,2462s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/tex
 live/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texl
 ive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texliv
 e/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive
-/2017/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></usr/local/texlive/201
-7/texmf-dist/fonts/type1/public/cm-super/sftt1095.pfb></usr/local/texlive/2017/
-texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/2017/texmf-d
-ist/fonts/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2017/texmf-dist/fon
-ts/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type
-1/urw/palatino/uplri8a.pfb>
-Output written on master-thesis-template.pdf (22 pages, 635321 bytes).
+/2017/texmf-dist/fonts/type1/public/mathpazo/fplmr.pfb></usr/local/texlive/2017
+/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></usr/local/texlive/2017/tex
+mf-dist/fonts/type1/public/cm-super/sftt1095.pfb></usr/local/texlive/2017/texmf
+-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/2017/texmf-dist/f
+onts/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/ty
+pe1/urw/palatino/uplr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw
+/palatino/uplri8a.pfb>
+Output written on master-thesis-template.pdf (30 pages, 1665289 bytes).
 PDF statistics:
- 383 PDF objects out of 1000 (max. 8388607)
- 342 compressed objects within 4 object streams
- 76 named destinations out of 1000 (max. 500000)
- 251 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 517 PDF objects out of 1000 (max. 8388607)
+ 446 compressed objects within 5 object streams
+ 103 named destinations out of 1000 (max. 500000)
+ 285 words of extra memory for PDF output out of 10000 (max. 10000000)
 
