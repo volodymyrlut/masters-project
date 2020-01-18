@@ -30,11 +30,13 @@ Each epoch RL agent can either explore random action or predict one using backen
 
 Since there is no actual next state for the controller, transition objects would contain the previous state, action taken and reward received.
 
+Using the accuracy of CNN directly as a reward would lead to suboptimal policies learned by RL agent. In order to avoid it, we would use a trick called Exponentially Weighted Moving Average. Fun fact: this kind of problem (choosing a correct representation of reward for RL agent) is also a hyperparameter optimization problem and other RL agents are used to optimize it - see \cite{rlhyperparamrl}.
+
 Since master CNN actually performs a regression task, we also use a converter that converts its outputs into actions that should be taken next. Obviously, the output layer could be modified to make this CNN solve a classification problem, but this trick was used in order to appropriately evaluate outputs of Gaussian Layer.
 
 \begin{figure}[!htb]
   \includegraphics[width=\linewidth]{images/dqn.png}
-  \caption{General overview of DQN RL architecture}
+  \caption{General overview of DQN RL architecture [original from \cite{Nair}]}
   \label{fig:dqn}
 \end{figure}
 

@@ -458,6 +458,47 @@
     \field{year}{2020}
   \endentry
 
+  \entry{rlhyperparamrl}{article}{}
+    \name{author}{3}{}{%
+      {{hash=FA}{%
+         family={Faust},
+         familyi={F\bibinitperiod},
+         given={Aleksandra},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=FA}{%
+         family={Francis},
+         familyi={F\bibinitperiod},
+         given={Anthony},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=MD}{%
+         family={Mehta},
+         familyi={M\bibinitperiod},
+         given={Dar},
+         giveni={D\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{FAFAMD1}
+    \strng{fullhash}{FAFAMD1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2019}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \verb{eprint}
+    \verb 1905.07628
+    \endverb
+    \field{title}{Evolving Rewards to Automate Reinforcement Learning}
+    \verb{url}
+    \verb http://arxiv.org/abs/1905.07628
+    \endverb
+    \field{volume}{abs/1905.07628}
+    \field{journaltitle}{CoRR}
+    \field{eprinttype}{arXiv}
+    \field{year}{2019}
+  \endentry
+
   \entry{tilmann}{article}{}
     \name{author}{3}{}{%
       {{hash=GT}{%
@@ -755,6 +796,28 @@
     \field{year}{2020}
   \endentry
 
+  \entry{nasgithub}{manual}{}
+    \name{author}{1}{}{%
+      {{hash=MS}{%
+         family={Majumdar},
+         familyi={M\bibinitperiod},
+         given={Somshubra},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{MS1}
+    \strng{fullhash}{MS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2017}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{note}{\url{https://github.com/titu1994/neural-architecture-search}}
+    \field{title}{Basic implementation of [Neural Architecture Search with
+  Reinforcement Learning](https://arxiv.org/abs/1611.01578).}
+    \field{year}{2017}
+  \endentry
+
   \entry{MnihKSGAWR13}{article}{}
     \name{author}{7}{}{%
       {{hash=MV}{%
@@ -820,6 +883,113 @@
     \field{year}{2013}
   \endentry
 
+  \entry{Nair}{article}{}
+    \name{author}{14}{}{%
+      {{hash=NA}{%
+         family={Nair},
+         familyi={N\bibinitperiod},
+         given={Arun},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=SP}{%
+         family={Srinivasan},
+         familyi={S\bibinitperiod},
+         given={Praveen},
+         giveni={P\bibinitperiod},
+      }}%
+      {{hash=BS}{%
+         family={Blackwell},
+         familyi={B\bibinitperiod},
+         given={Sam},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=AC}{%
+         family={Alcicek},
+         familyi={A\bibinitperiod},
+         given={Cagdas},
+         giveni={C\bibinitperiod},
+      }}%
+      {{hash=FR}{%
+         family={Fearon},
+         familyi={F\bibinitperiod},
+         given={Rory},
+         giveni={R\bibinitperiod},
+      }}%
+      {{hash=MAD}{%
+         family={Maria},
+         familyi={M\bibinitperiod},
+         given={Alessandro\bibnamedelima De},
+         giveni={A\bibinitperiod\bibinitdelim D\bibinitperiod},
+      }}%
+      {{hash=PV}{%
+         family={Panneershelvam},
+         familyi={P\bibinitperiod},
+         given={Vedavyas},
+         giveni={V\bibinitperiod},
+      }}%
+      {{hash=SM}{%
+         family={Suleyman},
+         familyi={S\bibinitperiod},
+         given={Mustafa},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=BC}{%
+         family={Beattie},
+         familyi={B\bibinitperiod},
+         given={Charles},
+         giveni={C\bibinitperiod},
+      }}%
+      {{hash=PS}{%
+         family={Petersen},
+         familyi={P\bibinitperiod},
+         given={Stig},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=LS}{%
+         family={Legg},
+         familyi={L\bibinitperiod},
+         given={Shane},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=MV}{%
+         family={Mnih},
+         familyi={M\bibinitperiod},
+         given={Volodymyr},
+         giveni={V\bibinitperiod},
+      }}%
+      {{hash=KK}{%
+         family={Kavukcuoglu},
+         familyi={K\bibinitperiod},
+         given={Koray},
+         giveni={K\bibinitperiod},
+      }}%
+      {{hash=SD}{%
+         family={Silver},
+         familyi={S\bibinitperiod},
+         given={David},
+         giveni={D\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{NA+1}
+    \strng{fullhash}{NASPBSACFRMADPVSMBCPSLSMVKKSD1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2015}
+    \field{sortinit}{N}
+    \field{sortinithash}{N}
+    \verb{eprint}
+    \verb 1507.04296
+    \endverb
+    \field{title}{Massively Parallel Methods for Deep Reinforcement Learning}
+    \verb{url}
+    \verb http://arxiv.org/abs/1507.04296
+    \endverb
+    \field{volume}{abs/1507.04296}
+    \field{journaltitle}{CoRR}
+    \field{eprinttype}{arXiv}
+    \field{year}{2015}
+  \endentry
+
   \entry{flowers}{article}{}
     \name{author}{2}{}{%
       {{hash=NME}{%
@@ -850,6 +1020,27 @@
   images have large scale, pose and light variations.%
     }
     \field{title}{Oxford 102 Flowers}
+  \endentry
+
+  \entry{rltutorial}{manual}{}
+    \name{author}{1}{}{%
+      {{hash=PA}{%
+         family={Paszke},
+         familyi={P\bibinitperiod},
+         given={Adam},
+         giveni={A\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{PA1}
+    \strng{fullhash}{PA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2017}
+    \field{sortinit}{P}
+    \field{sortinithash}{P}
+  \field{note}{\url{https://pytorch.org/tutorials/intermediate/reinforcement_q_learning.html}}
+    \field{title}{Reinforcement Learning (DQN) Tutorial}
+    \field{year}{2017}
   \endentry
 
   \entry{NEURIPS2019_9015}{incollection}{}
