@@ -11,51 +11,65 @@ data <- read.csv(file="logs.csv")
 
 ```{r}
 library(ggplot2)
-```
-
-```{r}
-data_iter <- as.numeric(unlist(strsplit(as.character(data[1,]$action), '\\-')))
-```
-
-```{r}
-data_iter <- data.frame(val = data_iter)
-```
-
-```{r}
-bar_gaussian <- ggplot() + 
-  geom_bar(data = data_iter, aes(y=val, x=c("K1", "F1", "K2", "F2", "K3", "F3", "K4", "F4")), stat="identity") + ylim(0, 64) + ggtitle("Prediction of CNN for CIFAR10") + xlab("Actions")
-```
-
-```{r}
-line_gaussian <- ggplot() + 
-  geom_smooth(data = head(data, 100), aes(y=accuracy, x=c(0:99))) + xlim(0, 300) + ggtitle("Accuracy of CNN for CIFAR10") + xlab("Epoch")
-```
-
-```{r}
 library(ggpubr)
 ```
 
 ```{r}
-ggarrange(bar_gaussian, bar_gaussian, line_gaussian, line_gaussian, ncol = 2, nrow = 2)
+gaussian <- data[data['controller'] == "gaussian",]
+classic <- data[data['controller'] == "classic",]
+gaussian_ucb <- data_ucb[data_ucb['controller'] == "gaussian",]
+classic_ucb <- data_ucb[data_ucb['controller'] == "classic",]
+i <- nrow(gaussian)
+l <- nrow(classic)
+#l <- nrow(gaussian_ucb)
+line_gaussian <- ggplot() + geom_smooth(data = gaussian, aes(y=total_reward, x=c(0:(i-1)))) + xlim(0, l) + ggtitle("Gaussian total reward EG") + xlab("Epoch")
+line_classic <- ggplot() + geom_smooth(data = classic, aes(y=total_reward, x=c(0:(i-1)))) + xlim(0, l) + 
+ggtitle("Classic total_reward EG") + xlab("Epoch")
+
+
+
+  ggarrange(line_gaussian, line_classic,  ncol = 1, nrow = 2)
+  ggsave("total_reward_epsilon_greedy.png")
 ```
-
-
 ```{r}
 gaussian <- data[data['controller'] == "gaussian",]
 classic <- data[data['controller'] == "classic",]
 l <- nrow(gaussian)
-for(i in c(1:l)){
-  data_iter_g <- as.numeric(unlist(strsplit(as.character(gaussian[i,]$action), '\\-')))
-  data_iter_g <- data.frame(val = data_iter_g)
-  data_iter_c <- as.numeric(unlist(strsplit(as.character(classic[i,]$action), '\\-')))
-  data_iter_c <- data.frame(val = data_iter_c)
-  data_iter_g$random <- if (gaussian[i,]$random == 1) "red" else "blue"
-  data_iter_c$random <- if (classic[i,]$random == 1) "red" else "blue"
- bar_gaussian <- ggplot() + geom_bar(data = data_iter_g, aes(y=val, x=c("K1", "F1", "K2", "F2", "K3", "F3", "K4", "F4"), fill=random), stat="identity") + ylim(0, 64) + ggtitle(paste("Gaussian CNN for ", toupper(gaussian[i,]$dataset))) + xlab("Actions") + theme(legend.position = "none")
-bar_classic <- ggplot() + geom_bar(data = data_iter_c, aes(y=val, x=c("K1", "F1", "K2", "F2", "K3", "F3", "K4", "F4"), fill=random), stat="identity") + ylim(0, 64) + ggtitle(paste("Classic CNN for ", toupper(classic[i,]$dataset))) + xlab("Actions") + theme(legend.position = "none")
-line_gaussian <- ggplot() + geom_smooth(data = head(gaussian, i), aes(y=accuracy, x=c(0:(i-1)))) + xlim(0, l) + ggtitle(paste("Gaussian accuracy for ", toupper(gaussian[i,]$dataset))) + xlab("Epoch")
-line_classic <- ggplot() + geom_smooth(data = head(classic, i), aes(y=accuracy, x=c(0:(i-1)))) + xlim(0, l) + ggtitle(paste("Classic accuracy for ", toupper(classic[i,]$dataset))) + xlab("Epoch")
-  ggarrange(bar_gaussian, bar_classic, line_gaussian, line_classic, ncol = 2, nrow = 2)
-  ggsave(paste(paste("img/", i), ".png"))
-}
+line_gaussian <- ggplot() + geom_smooth(data = gaussian, aes(y=accuracy, x=c(0:(i-1)))) + xlim(0, l) + ggtitle("Gaussian accuracy") + xlab("Epoch")
+line_classic <- ggplot() + geom_smooth(data = classic, aes(y=accuracy, x=c(0:(i-1)))) + xlim(0, l) + ggtitle("Classic accuracy") + xlab("Epoch")
+  ggarrange(line_gaussian, line_classic, ncol = 1, nrow = 2)
+  ggsave("ucb.png")
+```
+```{r}
+gaussian <- data[data['controller'] == "gaussian",]
+gaussian$known_action <- duplicated(gaussian$action)
+classic$known_action <- duplicated(classic$action)
+l <- nrow(gaussian)
+line_gaussian <- ggplot(gaussian, aes(y=accuracy, x=c(0:(i-1)), color=known_action)) + geom_area() + xlim(0, l) + ggtitle("Accuracy by nature of the action") +xlab("Epoch")
+line_classic <- ggplot(classic, aes(y=accuracy, x=c(0:(i-1)), color=known_action)) + geom_area() + xlim(0, l) + ggtitle("MLE variance") +xlab("Epoch")
+ggarrange(line_gaussian, line_classic, ncol = 1, nrow = 2)
+ggsave("action_unique.png")
+```
+
+```{r}
+p1 <- ggplot(data = data.frame(x = c(-1, 1)), aes(x)) +
+  stat_function(fun = dnorm, n = 101, args = list(mean = gaussian[20,]$mu, sd = sqrt(gaussian[20,]$sigma))) + xlab("20 epochs") + ylab("") +
+  scale_y_continuous(breaks = NULL)
+p2 <- ggplot(data = data.frame(x = c(-1, 1)), aes(x)) +
+  stat_function(fun = dnorm, n = 101, args = list(mean = gaussian[40,]$mu, sd = sqrt(gaussian[40,]$sigma))) + xlab("40 epochs") + ylab("") +
+  scale_y_continuous(breaks = NULL)
+p3 <- ggplot(data = data.frame(x = c(-1, 1)), aes(x)) +
+  stat_function(fun = dnorm, n = 101, args = list(mean = gaussian[60,]$mu, sd = sqrt(gaussian[60,]$sigma))) + xlab("60 epochs") + ylab("") +
+  scale_y_continuous(breaks = NULL)
+p4 <- ggplot(data = data.frame(x = c(-1, 1)), aes(x)) +
+  stat_function(fun = dnorm, n = 101, args = list(mean = gaussian[80,]$mu, sd = sqrt(gaussian[80,]$sigma))) + xlab("80 epochs") + ylab("") +
+  scale_y_continuous(breaks = NULL)
+p5 <- ggplot(data = data.frame(x = c(-1, 1)), aes(x)) +
+  stat_function(fun = dnorm, n = 101, args = list(mean = gaussian[100,]$mu, sd = sqrt(gaussian[100,]$sigma))) + xlab("100 epochs") + ylab("") +
+  scale_y_continuous(breaks = NULL)
+p6 <- ggplot(data = data.frame(x = c(-1, 1)), aes(x)) +
+  stat_function(fun = dnorm, n = 101, args = list(mean = gaussian[120,]$mu, sd = sqrt(gaussian[120,]$sigma))) + xlab("120 epochs") + ylab("") +
+  scale_y_continuous(breaks = NULL)
+ggarrange(p1, p2, p3, p4, p5, p6, ncol = 3, nrow = 2)
+ggsave("musigma.png")
 ```

@@ -1,0 +1,34 @@
+\chapter{Background overview}
+
+\section{History}
+
+The idea of using RL agents to build neural networks is not new, however, there are not so many research projects nowadays. Mostly the reason for this is that most of the research is held by business, and business usually is not optimistic about RL in production.
+
+However, some good progress was made in recent years. In 2015, ResNet becomes a winner of ILSVRC 2015 in image classification, detection, and localization and winner of MS COCO 2015 detection and segmentation. This enormous network contained 152 layers optimized by a lot of professional engineers manually. This process is expensive in terms of time and resources. Image classification contests are constantly showing a growing amount of layers for best-performing networks (AlexNet, 2012 - 8 layers, GoogleNet, 2014 - 22 layers). Resnet has 1.7 million parameters. Each competition is turning researchers more and more towards automation of this work - and this is a place where NAS becomes a new trend.
+
+Barret Zoph and Quoc Le. in \cite{ZophL16} used a recurrent network to generate the model descriptions of neural networks and train this RNN via RL agent to maximize the expected accuracy of the generated architectures on a validation set. This paper is one the most cited in this field and our research is heavily based on it.
+
+In 2019, Google researchers developed a family of models, called EfficientNets, which surpass state-of-the-art accuracy with up to 10x better efficiency (smaller and faster) using AutoML - see \cite{2019arXiv190511946T}.
+
+Amazon has two AutoML products to offer - Amazon SageMaker Autopilot for the creation of the classification and regression machine learning models and Amazon DeepAR for forecasting scalar (one-dimensional) time series using RNN. This paper is also heavily based on the probabilistic approach used in DeepAR because of it’s spectacular results.
+
+This section would not be full without the paper which shares a lot in common with this project. RL agent (Q-Learning, epsilon-greedy exploration rate control, finite state space) described in the paper outperformed meta-modeling approaches for network design on image classification tasks \cite{Baker2016DesigningNN}.
+
+The interest to the topic becomes even hotter when the NAS benchmark and dataset was introduced by Google Research team \cite{pmlr-v97-ying19a}
+
+A variety of methods have been proposed to perform NAS, including reinforcement learning, Bayesian optimization with a Gaussian process model, sequential model-based optimization (SMAC), evolutionary search, and gradient descent over the past few years. We see a lot of research potential in this field and we share a big passion for RL paradigm - and that's why this project exists.
+
+\section{Reinforcement Learning}
+
+\subsection{Markov Decision Process}
+\subsection{Q Learning}
+\subsection{Exploration and Exploitation problem}
+\subsection{Epsilon-greedy approach}
+\subsection{Upper-confidence bound}
+\section{Image classification problem}
+\section{Convolutional Neural Networks}
+\section{Gaussian Distribution}
+
+
+
+

@@ -165,8 +165,6 @@ distribution_sigma = nn.Softplus().to(device)
 
 
 def optimize_model(controller):
-    if len(memory) < BATCH_SIZE:
-        return
     pn = policy_net
     tn = target_net
     m = memory
@@ -176,6 +174,10 @@ def optimize_model(controller):
         m = memory_gaussian
         tn = target_net_gaussian
         o = optimizer_gaussian
+
+    if len(m) < BATCH_SIZE:
+        return
+
     transitions = m.sample(BATCH_SIZE)
     # Transpose the batch (see https://stackoverflow.com/a/19343/3343043 for
     # detailed explanation). This converts batch-array of Transitions
@@ -235,7 +237,6 @@ def optimize_model(controller):
         if param.grad is not None:
             param.grad.data.clamp_(-1, 1)
     o.step()
-
 
 for c in ['gaussian', 'classic']:
     PERFORMED_ACTIONS_LIST = []

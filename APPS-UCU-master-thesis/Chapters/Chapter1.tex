@@ -1,9 +1,19 @@
-
 \chapter{Introduction}
 
-\section{History}
+As machine learning provides a huge variety of automation possibilities for different industries the problem of automation of ML industry itself seems natural. For decades ML engineers were pioneers in the new era of computer science research. As a result, the new industry was shaped and this industry requires automation.
 
-Something on the topic
+AutoML is a general name of automation in routine work of ML engineers including but not limited to data preparation, feature engineering, feature extraction, neural architecture search, hyperparameters selection, etc.
 
+ML is reshaping businesses and other aspects of everyday life worldwide. We believe that everyone would benefit from the democratization of these new tools. Having the ability to run models on portable devices, IoT chips, and other mass-market hardware we treat AutoML as a big move towards in terms of a variety of different applications created.
+
+In recent years AutoML becomes a natural product for almost all big technological companies. Google, Amazon, Salesforce, and others are offering AutoML products that allow non-experts to create their ML solutions.
+
+Still, existing AutoML techniques require lots of computational resources and most of the research in the field is covered by tech giants nowadays. 
+
+We are focusing on neural architecture search problems, especially on hyperparameter optimization tasks because historically this problem is solved mainly using exhaustive search techniques, such as grid search. Engineers often follow their empirical knowledge and try to guess optimal parameters to tune models.
+
+We are using the reinforcement learning paradigm since it is performing well in solving NAS problems. RL agents can design better architectures than related hand-designed models in terms of error-rate and efficiency - \cite[see][]{ZophL16}.
+
+Moreover, we believe that RL could benefit from probabilistic approaches. We are deeply inspired by DeepAR \cite[][]{2017arXiv170404110S} used by Amazon to build forecasting models. We show that Gaussian probability distribution could be used to effectively balance the exploration and exploitation of RL agents solving NAS tasks.
 
 \endinput
