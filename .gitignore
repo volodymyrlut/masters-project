@@ -3,3 +3,7 @@
 .RData
 .Ruserdata
 experiments/neural-architecture-search/charts/img/*.png
+/neural-architecture-search/models/nasbench_only108.tfrecord
+/neural-architecture-search/.ipynb_checkpoints
+/neural-architecture-search/__pycache__
+/neural-architecture-search/.env
