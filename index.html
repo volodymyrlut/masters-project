@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="/lib/d3-tip/d3-tip.css"/>
+		<link rel="stylesheet" type="text/css" href="/css/main.css"/>
+		<link
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+			integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+			crossorigin="anonymous"
+		/>
+		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;500&display=swap" rel="stylesheet"> 
+	</head>
+	<body>
+		<div class = "container row">
+			<div class="stats__container col-sm-12">
+				<h1> Economical effects of COVID-19 crisis </h1>
+			</div>
+		</div>
+		<div class="container row">
+			<div class="stats__container col-sm-2">
+				<p class = "total-unemp"> Mean unemployment rate in country: </p>
+				<p class="unemp-mean"></p>
+				<div class="month-switchers">
+				</div>
+			</div>
+			<div class="map__container col-sm-10">
+				<div id="tooltip-container"></div>
+				<div class="map__main"></div>
+			</div>
+		</div>
+		<script src="https://d3js.org/d3.v4.min.js"></script>
+		<script src="https://d3js.org/queue.v1.min.js"></script>
+		<script src="https://d3js.org/topojson.v1.min.js"></script>
+		<script src="/lib/d3-tip/d3-tip.js"></script>
+		<script src="/lib/moment-js/moment.js"></script>
+		<script src="/lib/jquery/jquery.min.js"></script>
+		<script src="/js/main_map.js"></script>
+	</body>
+</html>

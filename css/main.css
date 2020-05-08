@@ -1,0 +1,92 @@
+body{
+  background-color: #F9F7E8 !important;
+  font-family: 'Roboto', sans-serif !important;
+  padding: 60px;
+}  
+
+.names {
+  fill: none;
+  stroke: #fff;
+  stroke-linejoin: round;
+}
+
+/* Tooltip CSS */
+.d3-tip {
+  line-height: 1.5;
+  font-weight: 400;
+  font-family:"avenir next", Arial, sans-serif;
+  padding: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #FFA500;
+  border-radius: 1px;
+  pointer-events: none;
+  position: absolute;
+}
+
+
+/* stylesheet for your custom graph */
+
+.states {
+  fill: none;
+  stroke: #fff;
+  stroke-linejoin: round;
+}
+
+.states-choropleth {
+  fill: #ccc;
+}
+
+#tooltip-container {
+  position: absolute;
+  background-color: #fff;
+  color: #000;
+  padding: 10px;
+  border: 1px solid;
+  display: none;
+}
+
+.tooltip_key {
+  font-weight: bold;
+}
+
+.tooltip_value {
+  margin-left: 20px;
+  float: right;
+}
+
+.total-unemp{
+  margin-top: 30px;
+}
+
+.unemp-mean{
+  margin: 15px 0;
+  font-size: 24px;
+  font-weight: 500;
+}
+/*    
+text{
+  pointer-events:none;
+}
+*/
+
+.details {
+  color: white;
+}
+
+.switcher {
+  cursor: pointer;
+  font-weight: 100;
+}
+
+.switcher:hover {
+  text-decoration: underline;
+}
+
+.switcher.active{
+  font-weight: 300;
+  text-decoration: underline;
+}
+
+.switcher.active:before {
+  content: '>';
+}
