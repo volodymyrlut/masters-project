@@ -7,3 +7,5 @@ experiments/neural-architecture-search/charts/img/*.png
 /neural-architecture-search/.ipynb_checkpoints
 /neural-architecture-search/__pycache__
 /neural-architecture-search/.env
+/neural-architecture-search/bananas
+/neural-architecture-search/nasbench-1shot1
