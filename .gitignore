@@ -9,3 +9,6 @@ experiments/neural-architecture-search/charts/img/*.png
 /neural-architecture-search/.env
 /neural-architecture-search/bananas
 /neural-architecture-search/nasbench-1shot1
+/logs/*.csv
+/logs/*.json
+/logs/*.txt
