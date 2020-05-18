@@ -47,7 +47,7 @@ class NasbenchWrapper:
         # Load the data from file (this will take some time)
         self.nasbench = api.NASBench('./models/nasbench_only108.tfrecord')
         # Lines below are just to construct proper pandas column structure
-        cell = self.random_cell(MAX_EDGES)
+        cell = self.random_cell()
         model_spec = api.ModelSpec(cell['matrix'], cell['ops'])
         data = self.nasbench.query(model_spec)
         md5hash = calculate_hash(cell)
@@ -65,10 +65,10 @@ class NasbenchWrapper:
         t = timestamp()
         self.df.to_csv("logs/nasbench_wrapper_" + str(t) + ".csv")
 
-    def random_cell(self, adj_matrix_size):
+    def random_cell(self, adj_matrix_size = MAX_VERTICES):
         
         if adj_matrix_size > MAX_VERTICES:
-            adj_matrix_size = MAX_VERTICES
+            # adj_matrix_size = MAX_VERTICES
             print("W01NB: Max number of vertices reached")
 
         while True:
@@ -80,10 +80,16 @@ class NasbenchWrapper:
             matrix = matrix.tolist()
             spec = api.ModelSpec(matrix=matrix, ops=ops)
             if self.nasbench.is_valid(spec):
-                return {
-                    'matrix': matrix,
-                    'ops': ops
-                }
+                # Relying on built-in nasbench functionality to remove
+                # useless connection; this is not affecting budjeting
+                fixed_stats = self.cut_cell({'matrix': matrix, 'ops': ops})
+                m = fixed_stats['module_adjacency'].tolist()
+                o = fixed_stats['module_operations']
+                if(len(m) == adj_matrix_size):
+                    return {
+                        'matrix': m,
+                        'ops': o
+                    }
 
     def query(self, cell):
         model_spec = api.ModelSpec(**cell)
@@ -91,12 +97,17 @@ class NasbenchWrapper:
         # Query this model from dataset, returns a dictionary containing the metrics
         # associated with this model.
         data = self.nasbench.query(model_spec)
-        data.pop('module_adjacency')
+        adj = data.pop('module_adjacency')
         data.pop('module_operations')
         data['hash'] = md5hash
         onerow = pd.DataFrame.from_records([data], index='hash')
         self.df = pd.concat([self.df, onerow])
-        return data
+        return data, adj
+
+    def cut_cell(self, cell):
+        model_spec = api.ModelSpec(**cell)
+        fixed_stats, computed_stats = self.nasbench.get_metrics_from_spec(model_spec)
+        return fixed_stats
 
     def get_trainable_params(self, cell):
         model_spec = api.ModelSpec(**cell)
@@ -112,10 +123,3 @@ class NasbenchWrapper:
     def is_valid(self, cell):
         spec = api.ModelSpec(**cell)
         return self.nasbench.is_valid(spec)
-
-
-qnb = NasbenchWrapper(30)
-import pdb; pdb.set_trace()  # breakpoint 7aab5a31 //
-
-
-print(qnb.random_cell(3))
