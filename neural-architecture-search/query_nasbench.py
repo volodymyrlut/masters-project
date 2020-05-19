@@ -43,9 +43,9 @@ class NasbenchWrapper:
     def __init__(self, seed):
         # Set random seed to check reproducibility of results
         self.seed = seed
-        np.random.seed()
+        np.random.seed(seed)
         # Load the data from file (this will take some time)
-        self.nasbench = api.NASBench('./models/nasbench_only108.tfrecord')
+        self.nasbench = api.NASBench('./models/nasbench_only108.tfrecord', seed = seed)
         # Lines below are just to construct proper pandas column structure
         cell = self.random_cell()
         model_spec = api.ModelSpec(cell['matrix'], cell['ops'])
@@ -91,7 +91,7 @@ class NasbenchWrapper:
                         'ops': o
                     }
 
-    def query(self, cell):
+    def query(self, cell, halfway = False):
         model_spec = api.ModelSpec(**cell)
         md5hash = calculate_hash(cell)
         # Query this model from dataset, returns a dictionary containing the metrics
@@ -103,6 +103,11 @@ class NasbenchWrapper:
         onerow = pd.DataFrame.from_records([data], index='hash')
         self.df = pd.concat([self.df, onerow])
         return data, adj
+
+    def get_stats(self, cell):
+        model_spec = api.ModelSpec(**cell)
+        fixed_stats, computed_stats = self.nasbench.get_metrics_from_spec(model_spec)
+        return computed_stats
 
     def cut_cell(self, cell):
         model_spec = api.ModelSpec(**cell)
