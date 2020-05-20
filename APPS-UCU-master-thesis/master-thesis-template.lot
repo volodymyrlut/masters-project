@@ -4,8 +4,9 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {4.1}{\ignorespaces Comparison of CIFAR10 and CIFAR100 datasets\relax }}{12}{table.caption.35}
-\contentsline {table}{\numberline {4.2}{\ignorespaces Additional metrics of RL algorithm\relax }}{13}{table.caption.38}
-\contentsline {table}{\numberline {4.3}{\ignorespaces Action space description\relax }}{13}{table.caption.40}
-\contentsline {table}{\numberline {4.4}{\ignorespaces Accuracy achieved by slave CNN\relax }}{17}{table.caption.47}
+\contentsline {table}{\numberline {4.1}{\ignorespaces Comparison of CIFAR10 and CIFAR100 datasets\relax }}{12}{table.caption.35}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Additional metrics of RL algorithm\relax }}{13}{table.caption.38}%
+\contentsline {table}{\numberline {4.3}{\ignorespaces Action space description\relax }}{13}{table.caption.40}%
+\contentsline {table}{\numberline {4.4}{\ignorespaces Accuracy achieved by slave CNN\relax }}{17}{table.caption.47}%
+\addvspace {10\p@ }
 \addvspace {10\p@ }
