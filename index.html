@@ -9,32 +9,114 @@
 			integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
 			crossorigin="anonymous"
 		/>
-		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;500&display=swap" rel="stylesheet"> 
+		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;500&display=swap" rel="stylesheet">
+		<title>Neural Architecture Search: Probabilistic Approach</title>
 	</head>
 	<body>
 		<div class = "container row">
 			<div class="stats__container col-sm-12">
-				<h1> Economical effects of COVID-19 crisis </h1>
+				<div class="container row">
+					<h1> Neural Architecture Search: Probabilistic Approach </h1>
+				</div>
+				<div class="container row">
+					<p> Searching optimum through exploration of similarities in architectures <a href=https://github.com/volodymyrlut/masters-project/raw/master/APPS_UCU_master_thesis.pdf">[PDF]</a> <a href="https://github.com/volodymyrlut/masters-project">[GitHub]</a></p>
+					<div class="clusterization-switchers">
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="container row">
-			<div class="stats__container col-sm-2">
-				<p class = "total-unemp"> Mean unemployment rate in country: </p>
-				<p class="unemp-mean"></p>
-				<div class="month-switchers">
+			<div class="col-sm-12">
+				<div class="main__container">
+					<div class="adj-block">
+						<p>Toggle elements of matrix below to explore similar architectures</p>
+						<div class="adj">
+							<div class="adj-row">
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-allowed"> 0 </div>
+								<div class="el el-allowed"> 0 </div>
+								<div class="el el-allowed"> 0 </div>
+								<div class="el el-allowed"> 0 </div>
+								<div class="el el-allowed"> 0 </div>
+								<div class="el el-allowed"> 0 </div>
+							</div>
+							<div class="adj-row">
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-allowed"> 0 </div>
+								<div class="el el-allowed"> 0 </div>
+								<div class="el el-allowed"> 0 </div>
+								<div class="el el-allowed"> 0 </div>
+								<div class="el el-allowed"> 0 </div>
+							</div>
+							<div class="adj-row">
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-allowed"> 0 </div>
+								<div class="el el-allowed"> 0 </div>
+								<div class="el el-allowed"> 0 </div>
+								<div class="el el-allowed"> 0 </div>
+							</div>
+							<div class="adj-row">
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-allowed"> 0 </div>
+								<div class="el el-allowed"> 0 </div>
+								<div class="el el-allowed"> 0 </div>
+							</div>
+							<div class="adj-row">
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-allowed"> 0 </div>
+								<div class="el el-allowed"> 0 </div>
+							</div>
+							<div class="adj-row">
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-allowed"> 0 </div>
+							</div>
+							<div class="adj-row">
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-prohibited"> 0 </div>
+								<div class="el el-prohibited"> 0 </div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="main__container">
+					<div id="scatterplot"></div>
+				</div>
+				<div class="expl__container">
+					<p> Chart above represents 1500 unique architectures represented by 7x7 adjacency matrices, randomly sampled from [NasBench-101](https://github.com/google-research/nasbench). The only operation type used at edges is 3X3 Convolution with Batch Normalization and RELU as an activation function.</p>
+                    <p> Use adjacency matrix at the left top corner of this website to explore this search space. Architectures that have selected edges would become bigger and change their color.</p>
+                    <p> Similar approach used in our project. We are selecting best-performing architecture clusters to explore them further and search for optimal models.</p>
 				</div>
 			</div>
-			<div class="map__container col-sm-10">
-				<div id="tooltip-container"></div>
-				<div class="map__main"></div>
+		</div>
+		<div class="container row" style="margin-top: 80px">
+			<div id="adj">
 			</div>
 		</div>
-		<script src="https://d3js.org/d3.v4.min.js"></script>
+		<script src="https://d3js.org/d3.v4.js"></script>
+		<script src="https://d3js.org/d3-array.v2.min.js"></script>
 		<script src="https://d3js.org/queue.v1.min.js"></script>
-		<script src="https://d3js.org/topojson.v1.min.js"></script>
+		<script src="/lib/clustering/clustering.min.js"></script>
 		<script src="/lib/d3-tip/d3-tip.js"></script>
-		<script src="/lib/moment-js/moment.js"></script>
 		<script src="/lib/jquery/jquery.min.js"></script>
-		<script src="/js/main_map.js"></script>
+		<script src="/js/main.js"></script>
 	</body>
 </html>
