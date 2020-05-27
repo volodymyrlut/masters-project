@@ -61,8 +61,8 @@ const dataLoadHandler = (error, cells, results) => {
 
 const renderMap = () => {
   queue()
-    .defer(d3.json, 'data/random_cells.json')
-    .defer(d3.json, 'data/random_results.json')
+    .defer(d3.json, 'https://volodymyrlut.github.io/masters-project/data/random_cells.json')
+    .defer(d3.json, 'https://volodymyrlut.github.io/masters-project/data/random_results.json')
     .await(dataLoadHandler);
 }
 
