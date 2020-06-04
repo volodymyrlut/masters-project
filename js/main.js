@@ -1,7 +1,7 @@
 const plotScatter = (data) => {
   d3.selectAll("#scatterplot > svg").remove();  
   $(".switcher").removeClass("active");
-  var margin = {top: 10, right: 30, bottom: 30, left: 60},
+  var margin = {top: 10, right: 10, bottom: 60, left: 80},
       width = 800 - margin.left - margin.right,
       height = 400 - margin.top - margin.bottom;
 
@@ -31,7 +31,7 @@ const plotScatter = (data) => {
   let adj = $(".adj").text().replace(/\D/g,'');
   var colorScale = d3.scaleQuantize()
       .domain([0, 9])
-      .range(["#BEC5AD", "#A4B494", "#519872", "#3B5249", "#e9c46a", "#f4a261", "#e76f51", "#6a040f", "#370617", "#03071e"])
+      .range(["#80FFDB", "#72EFDD", "#64DFDF", "#56CFE1", "#48BFE3", "#4EA8DE", "#5390D9", "#5E60CE", "#6930C3", "#7400B8"])
   // Add dots
   svg.append('g')
     .selectAll("dot")
@@ -41,9 +41,23 @@ const plotScatter = (data) => {
       .attr("cx", function (d) { return x(d.mean_training_time); } )
       .attr("cy", function (d) { return y(d.mean_test_acc); } )
       .attr("r", (d) => 1.5 + 1 * ([].concat(...d['matrix']).filter((el, i) => el == 1 && adj[i] == "1").length))
-      .style("opacity", "0.4")
+      .style("opacity", (d) => ([].concat(...d['matrix']).filter((el, i) => el == 1 && adj[i] == "1").length) == 7 ? "1" : "0.4")
       .style("fill", (d) => colorScale([].concat(...d['matrix']).filter((el, i) => el == 1 && adj[i] == "1").length));
-      
+  
+  svg.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 0 - margin.left / 2 - 15)
+    .attr("x",0 - (height / 2))
+    .attr("dy", "1em")
+    .style("text-anchor", "middle")
+    .text("Mean test accuracy");
+
+  svg.append("text")             
+    .attr("transform",
+          "translate(" + (width / 2) + " ," + 
+                         (height + margin.top + 30) + ")")
+    .style("text-anchor", "middle")
+    .text("Mean training time");
 }
 
 
