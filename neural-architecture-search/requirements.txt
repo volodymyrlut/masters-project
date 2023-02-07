@@ -13,7 +13,7 @@ cloudpickle==1.1.1
 conda==4.8.3
 conda-package-handling==1.6.0
 ConfigSpace==0.4.12
-cryptography==2.8
+cryptography==39.0.1
 cycler==0.10.0
 Cython==0.29.17
 decorator==4.4.2
